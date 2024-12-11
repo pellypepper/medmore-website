@@ -24,7 +24,7 @@ const fs = require('fs');
 const path = require('path');
 const pool = require('./db');
 const app = express();
-const PORT = 4000;
+const PORT = 10000;
 
 // Middleware
 app.use(cors({
