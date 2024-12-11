@@ -17,7 +17,7 @@ const AdminDashboard = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await fetch('http://localhost:4000/logout', {
+            const response = await fetch('http://localhost:10000/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,13 +41,13 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const productsResponse = await fetch('http://localhost:4000/products');
+                const productsResponse = await fetch('http://localhost:10000/products');
                 const productsData = await productsResponse.json();
 
-                const salesResponse = await fetch('http://localhost:4000/sales');
+                const salesResponse = await fetch('http://localhost:10000/sales');
                 const salesData = await salesResponse.json();
 
-                const ordersResponse = await fetch('http://localhost:4000/orders');
+                const ordersResponse = await fetch('http://localhost:10000/orders');
                 const ordersData = await ordersResponse.json();
 
                 setProducts(productsData);

@@ -13,7 +13,7 @@ const ProductSlider = ({ addToCart, searchQuery }) => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const response = await fetch("http://localhost:4000/products");
+                const response = await fetch("http://localhost:10000/products");
                 if (!response.ok) throw new Error("Failed to fetch products");
                 const data = await response.json();
                 setProducts(data);

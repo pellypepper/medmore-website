@@ -36,7 +36,7 @@ const Card = () => {
 
         try {
             console.log('Creating payment intent...');
-            const response = await fetch('http://localhost:4000/create-payment-intent', {
+            const response = await fetch('http://localhost:10000/create-payment-intent', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ amount: total, paymentMethodType }),
@@ -116,7 +116,7 @@ const Card = () => {
 
     const sendUserDataToServer = async (userData, paymentIntentId, cart) => {
         try {
-            const response = await fetch('http://localhost:4000/record-payment', {
+            const response = await fetch('http://localhost:10000/record-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...userData, paymentIntentId, cart }),
