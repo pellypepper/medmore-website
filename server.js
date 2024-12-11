@@ -28,7 +28,7 @@ const PORT = 10000;
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://medmorestore.onrender.com',
     credentials: true, 
 }));
 app.use(express.json());

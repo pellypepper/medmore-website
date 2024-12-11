@@ -42,7 +42,7 @@ function App() {
         }
     
         try {
-            const response = await fetch("http://localhost:10000/cart", {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userId: sessionStorage.getItem("user_id"), productId: product.productId }),

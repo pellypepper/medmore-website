@@ -53,7 +53,7 @@ export default function Home({ removeFromCart }) {
         updateSessionStorageCart(updatedCart);
 
         try {
-            const response = await fetch("http://localhost:10000/cart", {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -92,7 +92,7 @@ export default function Home({ removeFromCart }) {
         const fetchProducts = async () => {
             setLoadingProducts(true);
             try {
-                const response = await fetch("http://localhost:10000/products");
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/products`);
                 if (!response.ok) throw new Error("Failed to fetch products");
                 const data = await response.json();
                 setProducts(data);
@@ -112,7 +112,7 @@ export default function Home({ removeFromCart }) {
             const userId = getUserId();
             setLoadingCart(true);
             try {
-                const response = await fetch(`http://localhost:10000/cart/${userId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/${userId}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const cartData = await response.json();
                 setCart(cartData);

@@ -29,7 +29,7 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
 
         setLoading(true);
         try {
-            const response = await fetch("http://localhost:10000/login", {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
