@@ -1,4 +1,7 @@
 {
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
@@ -9,39 +12,53 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.9",
-    "axios": "^1.7.9",
-    "bcrypt": "^5.1.1",
+    "@stripe/react-stripe-js": "^3.0.0",
+    "@stripe/stripe-js": "^5.2.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.8",
     "body-parser": "^1.20.3",
-    "connect-pg-simple": "^10.0.0",
+    "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-session": "^1.18.1",
-    "form-data": "^4.0.1",
-    "googleapis": "^144.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "local": "^0.3.3",
-    "multer": "^1.4.5-lts.1",
+    "express": "^4.21.1",
     "nodemailer": "^6.9.16",
-    "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
-    "pg": "^8.13.1",
     "react": "^18.3.1",
+    "react-bootstrap": "^2.10.6",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
-    "session": "^0.1.0",
-    "strategy": "^1.1.1",
-    "stripe": "^17.4.0"
+    "react-router-dom": "^7.0.1",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
   },
-  "name": "foodstuff",
-  "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "description": ""
+  "license": "ISC"
 }
