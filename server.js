@@ -98,7 +98,8 @@ passport.deserializeUser(async (id, done) => {
   app.use(passport.session());
 
 // Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, 'frontend', 'build')));
+app.use(express.static(path.join(__dirname,  'build')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
 
 
 // Stripe webhook setup
@@ -661,28 +662,28 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/admin', isAdmin, (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'build', 'admin.html'));
+    res.sendFile(path.join(__dirname, 'build', 'admin.html'));
 });
 
 app.get('/checkout', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+    res.sendFile(path.join(__dirname,  'build', 'index.html'));
 });
 
 app.get('/payment', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 app.get('/detail', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+    res.sendFile(path.join(__dirname,  'build', 'index.html'));
 });
 
 app.get('/display', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 // Handle all other routes by sending the React app's index.html
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 // Start the server
