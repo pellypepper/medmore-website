@@ -169,12 +169,18 @@ const AdminDashboard = () => {
         if (productForm.img) {
             formData.append('image', productForm.img); // Append updated image if exists
         }
+        console.log(productForm.img);
+        console.log(formData);
+        for (let [key, value] of formData.entries()) {
+           console.log(`${key}: ${value instanceof File ? value.name : value}`);
+       }
 
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/products/${productForm.id}`, {
                 method: 'PUT',
                 body: formData, // Send FormData
             });
+            console.log(response);
 
             if (!response.ok) {
                 throw new Error('Failed to update product');

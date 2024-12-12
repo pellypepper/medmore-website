@@ -377,10 +377,11 @@ app.get('/products', async (req, res) => {
 app.put('/products/:id', async (req, res) => {
     const { id } = req.params;
     const { name, price, img } = req.body;
+    console.log('Request body:', req.body);
 
     try {
         console.log('Update request received for ID:', id);
-        console.log('Request body:', req.body);
+   
         const result = await pool.query(
             'UPDATE "products" SET name = $1, price = $2, img = $3 WHERE id = $4 RETURNING *',
             [name, price, img, id]
@@ -391,6 +392,8 @@ app.put('/products/:id', async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Product not found' });
         }
+        
+        console.log('Req:', result.rows[0]);
 
         res.json(result.rows[0]);
     } catch (error) {
