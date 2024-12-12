@@ -49,6 +49,7 @@ const AdminDashboard = () => {
 
                 const ordersResponse = await fetch(`${process.env.REACT_APP_API_URL}/orders`);
                 const ordersData = await ordersResponse.json();
+                console.log('Fetched orders:', ordersData);
 
                 setProducts(productsData);
                 setSalesData(salesData);
@@ -120,7 +121,7 @@ const AdminDashboard = () => {
         formData.append('image', productForm.img); // Append image file
 
         try {
-            const response = await fetch('http://localhost:4000/products', {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/products`, {
                 method: 'POST',
                 body: formData, // Send FormData
             });
@@ -152,7 +153,7 @@ const AdminDashboard = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:4000/products/${productForm.id}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/products${productForm.id}`, {
                 method: 'PUT',
                 body: formData, // Send FormData
             });
@@ -176,7 +177,7 @@ const AdminDashboard = () => {
 
     const handleDeleteProduct = async (id) => {
         try {
-            const response = await fetch(`http://localhost:4000/products/${id}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/products${id}`, {
                 method: 'DELETE',
             });
 
