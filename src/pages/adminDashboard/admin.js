@@ -130,18 +130,19 @@ const AdminDashboard = () => {
         formData.append('name', productForm.name);
         formData.append('price', productForm.price);
         formData.append('image', productForm.img); // Append image file
-
+         console.log(formData);
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/products`, {
                 method: 'POST',
                 body: formData, // Send FormData
             });
-
+          
             if (!response.ok) {
                 throw new Error('Failed to add product');
             }
 
             const newProduct = await response.json();
+            console.log(newProduct);
             setProducts((prevProducts) => [...prevProducts, newProduct]);
             setProductForm({ id: '', name: '', price: '', img: null }); // Reset form
         } catch (error) {
