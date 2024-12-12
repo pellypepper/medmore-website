@@ -297,7 +297,7 @@ const FormData = require('form-data'); // Ensure you have 'form-data' installed
 app.post('/products', upload.single('image'), async (req, res) => {
     console.log('Request body:', req.body);
     console.log('Request file:', req.file);
-
+                                                   
     if (!req.file) {
         return res.status(400).json({ error: 'No image uploaded' });
     }
