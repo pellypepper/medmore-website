@@ -130,7 +130,11 @@ const AdminDashboard = () => {
         formData.append('name', productForm.name);
         formData.append('price', productForm.price);
         formData.append('image', productForm.img); // Append image file
+        console.log(productForm.img);
          console.log(formData);
+         for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value instanceof File ? value.name : value}`);
+        }
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/products`, {
                 method: 'POST',
