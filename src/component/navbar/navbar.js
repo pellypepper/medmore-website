@@ -45,7 +45,7 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
             const data = await response.json();
             console.log("Login successful:", data);
 
-            if (data.user?.isAdmin) {
+            if (data.user?.isadmin) {
                 navigate("/admin"); // Redirect to admin page if user is admin
             } else {
                 alert("You do not have permission to access the admin page.");
