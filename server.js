@@ -330,7 +330,7 @@ app.post('/products', upload.single('image'), async (req, res) => {
         );
         console.log('added:', result.rows[0]);
 
-        res.status(201).json(result.rows[0]);
+        res.json(result.rows[0]);
     } catch (error) {
         console.error('Error in /products endpoint:', error);
         res.status(500).json({ error: 'Failed to upload image or save product' });
