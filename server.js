@@ -31,10 +31,10 @@ app.use(cors({
     origin: 'https://medmorestore.onrender.com',
     credentials: true, 
 }));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
-
-app.use(express.urlencoded({ extended: true }));
+// Increase URL-encoded payload limit
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 const pgPool = require('pg').Pool; 
 const sessionStore = new pgSession({
     pool: pool, 
@@ -100,7 +100,8 @@ passport.deserializeUser(async (id, done) => {
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname,  'build')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
-
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 // Stripe webhook setup
 app.use(
