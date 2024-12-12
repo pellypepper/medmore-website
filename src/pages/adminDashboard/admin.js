@@ -142,7 +142,9 @@ const AdminDashboard = () => {
             });
           
             if (!response.ok) {
-                throw new Error('Failed to add product');
+                const errorResponse = await response.json(); // Read the error response
+                console.error('Response Error:', errorResponse);
+                throw new Error(`Failed to add product: ${response.statusText}`);
             }
 
             const newProduct = await response.json();
