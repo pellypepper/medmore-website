@@ -327,8 +327,7 @@ const AdminDashboard = () => {
                             )}
                         </form>
                         <div className="products-grid">
-                        {productForm.imgPreview && <img src={productForm.imgPreview} alt="Product Preview" />}
-
+                     
                             {products.map((product) => (
                                 <div key={product.id} className="product-card">
                                     <img src={product.img} alt={product.name} />
