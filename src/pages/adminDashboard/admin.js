@@ -165,7 +165,7 @@ const AdminDashboard = () => {
         }
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/products${productForm.id}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/products/${productForm.id}`, {
                 method: 'PUT',
                 body: formData, // Send FormData
             });
@@ -189,7 +189,7 @@ const AdminDashboard = () => {
 
     const handleDeleteProduct = async (id) => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/products${id}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/products/${id}`, {
                 method: 'DELETE',
             });
 
