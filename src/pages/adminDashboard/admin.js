@@ -110,10 +110,21 @@ const AdminDashboard = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0]; // Get the selected file
-        setProductForm({ ...productForm, img: file }); // Store file in img field
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setProductForm({ ...productForm, img: file }); // Set img file
+                setProductForm((prevForm) => ({ ...prevForm, imgPreview: reader.result })); // Set preview
+            };
+            reader.readAsDataURL(file); // Read the file as a Data URL
+        }
     };
+    
+    
 
     const handleAddProduct = async (e) => {
+        console.log(`${process.env.REACT_APP_API_URL}/products`);
+
         e.preventDefault();
         const formData = new FormData(); // Use FormData for file uploads
         formData.append('name', productForm.name);
@@ -300,9 +311,11 @@ const AdminDashboard = () => {
                                 onChange={handleInputChange}
                                 required
                             />
+
                             <input
                                 type="file" // Change to file input
                                 name="img"
+        
                                 placeholder="Product Image"
                                 accept="image/*" // Accept image files
                                 onChange={handleFileChange} // Handle file change
@@ -314,6 +327,8 @@ const AdminDashboard = () => {
                             )}
                         </form>
                         <div className="products-grid">
+                        {productForm.imgPreview && <img src={productForm.imgPreview} alt="Product Preview" />}
+
                             {products.map((product) => (
                                 <div key={product.id} className="product-card">
                                     <img src={product.img} alt={product.name} />
