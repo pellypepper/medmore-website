@@ -3,6 +3,7 @@ const express = require('express');
 const stream = require('stream');
 const jwt = require('jsonwebtoken');
 const axios = require('axios'); 
+const sharp = require('sharp');
 const multer = require('multer');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -292,21 +293,30 @@ const upload = multer({ storage: multer.memoryStorage() }); // Use memory storag
 // Endpoint to handle image uploads
 const FormData = require('form-data'); // Ensure you have 'form-data' installed
 
+
 app.post('/products', upload.single('image'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No image uploaded' });
     }
 
     try {
+        // Compress and resize the image using sharp
+        const compressedImageBuffer = await sharp(req.file.buffer)
+            .resize(1920) // Resize to max width of 1920px (optional)
+            .jpeg({ quality: 80 }) // Convert to JPEG with 80% quality
+            .toBuffer();
+
+        // Prepare the FormData payload
         const formData = new FormData();
-        formData.append('image', req.file.buffer, {
+        formData.append('image', compressedImageBuffer, {
             filename: req.file.originalname,
-            contentType: req.file.mimetype,
+            contentType: 'image/jpeg',
         });
 
+        // Upload to Imgur
         const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
             headers: {
-                ...formData.getHeaders(), // Get the headers for FormData
+                ...formData.getHeaders(), // Include FormData headers
                 Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
             },
         });
