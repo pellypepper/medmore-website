@@ -2,8 +2,8 @@ require('dotenv').config(); // Load environment variables
 const express = require('express');
 const stream = require('stream');
 const jwt = require('jsonwebtoken');
-const axios = require('axios'); 
 const sharp = require('sharp');
+const axios = require('axios'); 
 const multer = require('multer');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -295,28 +295,28 @@ const FormData = require('form-data'); // Ensure you have 'form-data' installed
 
 
 app.post('/products', upload.single('image'), async (req, res) => {
+    console.log('Request body:', req.body);
+    console.log('Request file:', req.file);
+
     if (!req.file) {
         return res.status(400).json({ error: 'No image uploaded' });
     }
 
     try {
-        // Compress and resize the image using sharp
         const compressedImageBuffer = await sharp(req.file.buffer)
-            .resize(1920) // Resize to max width of 1920px (optional)
-            .jpeg({ quality: 80 }) // Convert to JPEG with 80% quality
+            .resize(1920)
+            .jpeg({ quality: 80 })
             .toBuffer();
 
-        // Prepare the FormData payload
         const formData = new FormData();
         formData.append('image', compressedImageBuffer, {
             filename: req.file.originalname,
-            contentType: 'image/jpeg',
+            contentType: req.file.mimetype,
         });
 
-        // Upload to Imgur
         const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
             headers: {
-                ...formData.getHeaders(), // Include FormData headers
+                ...formData.getHeaders(),
                 Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
             },
         });
@@ -324,20 +324,18 @@ app.post('/products', upload.single('image'), async (req, res) => {
         const { name, price } = req.body;
         const imageUrl = imgurResponse.data.data.link;
 
-        // Save the image URL and product details to the database
         const result = await pool.query(
             'INSERT INTO "products" (img, name, price) VALUES ($1, $2, $3) RETURNING *',
             [imageUrl, name, price]
         );
+        console.log('added:', result.rows[0]);
 
-        // Return the newly created product
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error('Error in /products endpoint:', error); // Log the error details
+        console.error('Error in /products endpoint:', error);
         res.status(500).json({ error: 'Failed to upload image or save product' });
     }
 });
-
 
 
 
