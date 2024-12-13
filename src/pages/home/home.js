@@ -152,9 +152,9 @@ export default function Home({ removeFromCart }) {
         }
     }, [searchQuery, products]);
 
-    if (loadingCart) {
-        return <Spinner />;
-    }
+    // if (loadingCart) {
+    //     return <Spinner />;
+    // }
 
     return (
         <main className="Home">
