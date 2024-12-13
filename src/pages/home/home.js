@@ -76,7 +76,7 @@ export default function Home({ removeFromCart }) {
             }
 
             const updatedCartFromServer = await response.json();
-            if (JSON.stringify(updatedCart) !== JSON.stringify(updatedCartFromServer)) {
+            if (JSON.stringify(cart) !== JSON.stringify(updatedCartFromServer)) {
                 setCart(updatedCartFromServer);
                 updateSessionStorageCart(updatedCartFromServer);
             }
