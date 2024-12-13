@@ -123,7 +123,7 @@ const AdminDashboard = () => {
     
     const handleAddProduct = async (e) => {
         e.preventDefault();
-        
+        console.log(`${process.env.REACT_APP_API_URL}/products`);
         // Comprehensive validation
         if (!productForm.name || !productForm.price) {
             alert('Please enter product name and price');
@@ -205,7 +205,7 @@ const AdminDashboard = () => {
 
         try {
      
-            const response = await fetch(`https://medmorestore.onrender.com/product/${productForm.id}`, {
+            const response = await fetch(`https://medmorestore.onrender.com/products/${productForm.id}`, {
                 method: 'PUT',          
                 body: formData, // Send FormData
                 credentials: 'include', // Important for cookies/authentication
