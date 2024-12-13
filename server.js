@@ -29,8 +29,17 @@ const PORT = 10000;
 
 // Middleware
 app.use(cors({
-    origin: 'https://medmorestore.onrender.com',
-    credentials: true, 
+    origin: [
+        'https://medmorestore.onrender.com'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Content-Type', 
+        'Authorization', 
+        'Access-Control-Allow-Headers', 
+        'Access-Control-Allow-Origin'
+    ],
+    credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
 

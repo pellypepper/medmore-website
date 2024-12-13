@@ -139,6 +139,7 @@ const AdminDashboard = () => {
             const response = await fetch("https://medmorestore.onrender.com/products", {
                 method: 'POST',
                 body: formData, // Send FormData
+                credentials: 'include',
             });
            console.log(response);
             if (!response.ok) {
@@ -162,7 +163,7 @@ const AdminDashboard = () => {
     };
 
     const handleUpdateProduct = async (e) => {
-        console.log("https://medmorestore.onrender.com/products/${id}");
+        console.log("https://medmorestore.onrender.com/products/${productForm.id}");
         e.preventDefault();
         const formData = new FormData();
         formData.append('name', productForm.name);
@@ -178,9 +179,10 @@ const AdminDashboard = () => {
 
         try {
      
-            const response = await fetch("https://medmorestore.onrender.com/products/${id}", {
+            const response = await fetch("https://medmorestore.onrender.com/product/${productForm.id}", {
                 method: 'PUT',
                 body: formData, // Send FormData
+                credentials: 'include',
             });
             console.log(response);
 
