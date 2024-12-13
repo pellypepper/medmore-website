@@ -123,8 +123,8 @@ const AdminDashboard = () => {
     
     const handleAddProduct = async (e) => {
         e.preventDefault();
-        console.log(`${process.env.REACT_APP_API_URL}/products`);
-        // Comprehensive validation
+    
+        // Validation
         if (!productForm.name || !productForm.price) {
             alert('Please enter product name and price');
             return;
@@ -140,35 +140,22 @@ const AdminDashboard = () => {
         formData.append('price', productForm.price);
         formData.append('image', productForm.image);
     
-      
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value instanceof File ? value.name : value}`);
-        }
-    
         try {
-            const response = await  axios.post(`${process.env.REACT_APP_API_URL}/products`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }});
+            const response = await axios.post(
+                `${process.env.REACT_APP_API_URL}/products`, 
+                formData, 
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }
+            );
     
-            console.log('Full Response:', {
-                status: response.status,
-                statusText: response.statusText
-            });
-    
-            if (!response.ok) {
-                // Try to parse error response
-                const errorText = await response.text();
-                console.error('Error Response:', errorText);
-                
-                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-            }
-    
-            const newProduct = await response.json();
-            console.log('New Product Added:', newProduct);
+            // Correct way to handle axios response
+            console.log('New Product Added:', response.data);
     
             // Update products list
-            setProducts((prevProducts) => [...prevProducts, newProduct]);
+            setProducts((prevProducts) => [...prevProducts, response.data]);
             
             // Reset form
             setProductForm({ id: '', name: '', price: '', image: null });
@@ -176,8 +163,8 @@ const AdminDashboard = () => {
             alert('Product added successfully!');
     
         } catch (error) {
-            console.error('Complete Error:', error);
-            alert(`Failed to add product: ${error.message}`);
+            console.error('Complete Error:', error.response ? error.response.data : error.message);
+            alert(`Failed to add product: ${error.response ? error.response.data.error : error.message}`);
         }
     };
     
@@ -187,39 +174,42 @@ const AdminDashboard = () => {
     };
 
     const handleUpdateProduct = async (e) => {
-        console.log(`https://medmorestore.onrender.com/products/${productForm.id}`);
         e.preventDefault();
         const formData = new FormData();
         formData.append('name', productForm.name);
         formData.append('price', productForm.price);
         if (productForm.image) {
-            formData.append('image', productForm.image); // Append updated image if exists
+            formData.append('image', productForm.image);
         }
-        console.log(productForm.image);
-        console.log(formData);
-        for (let [key, value] of formData.entries()) {
-           console.log(`${key}: ${value instanceof File ? value.name : value}`);
-       }
-
+    
         try {
-     
-            const response = await  axios.put(`${process.env.REACT_APP_API_URL}/products/${productForm.id}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }});
-            console.log(response);
-
-            if (!response.ok) {
+            const response = await axios.put(
+                `${process.env.REACT_APP_API_URL}/products/${productForm.id}`, 
+                formData, 
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }
+            );
+    
+            // Error: response.ok doesn't exist on axios response
+            // Instead, check response status
+            if (response.status !== 200) {
                 throw new Error('Failed to update product');
             }
-
-            const updatedProduct = await response.json();
+    
+            // Error: response.json() doesn't exist on axios
+            // Use response.data instead
+            const updatedProduct = response.data;
+    
             setProducts((prevProducts) =>
                 prevProducts.map((product) =>
                     product.id === updatedProduct.id ? updatedProduct : product
                 )
             );
-            setProductForm({ id: '', name: '', price: '', image: null }); // Reset form
+    
+            setProductForm({ id: '', name: '', price: '', image: null });
             setIsEditing(false);
         } catch (error) {
             console.error('Error updating product:', error);

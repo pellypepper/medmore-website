@@ -28,9 +28,7 @@ const app = express();
 const PORT = 10000;
 
 app.use(cors({
-    origin: [
-        process.env.REACT_APP_API_URL
-    ],
+    origin: process.env.REACT_APP_API_URL, // Can be an array or string
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
         'Content-Type', 
@@ -302,15 +300,10 @@ const FormData = require('form-data'); // Ensure you have 'form-data' installed
 
 app.post('/products', upload.single('image'), async (req, res) => {
     try {
-        // Comprehensive logging
         console.log('Received Product Data:', {
             body: req.body,
             file: req.file ? req.file.originalname : 'No file'
         });
-
-        if (!req.file) {
-            return res.status(400).json({ error: 'No image uploaded' });
-        }
 
         // Validate inputs
         const { name, price } = req.body;
@@ -318,48 +311,40 @@ app.post('/products', upload.single('image'), async (req, res) => {
             return res.status(400).json({ error: 'Name and price are required' });
         }
 
-        // Image processing
-        const compressedImageBuffer = await sharp(req.file.buffer)
-            .resize({ width: 1920, height: null, fit: 'inside', withoutEnlargement: true })
-            .jpeg({ quality: 80 })
-            .toBuffer();
+        // Check if file exists
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image uploaded' });
+        }
 
-        // Retry logic for Imgur upload
-        const retries = 3; // Define the number of retries
+        // Image processing with error handling
         let imageUrl;
+        try {
+            const compressedImageBuffer = await sharp(req.file.buffer)
+                .resize({ width: 1920, height: null, fit: 'inside', withoutEnlargement: true })
+                .jpeg({ quality: 80 })
+                .toBuffer();
 
-        for (let i = 0; i < retries; i++) {
-            try {
-                const formData = new FormData();
-                formData.append('image', compressedImageBuffer, {
-                    filename: req.file.originalname,
-                    contentType: 'image/jpeg',
-                });
+            // Imgur upload with comprehensive error handling
+            const formData = new FormData();
+            formData.append('image', compressedImageBuffer, {
+                filename: req.file.originalname,
+                contentType: 'image/jpeg',
+            });
 
-                const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
-                    headers: {
-                        ...formData.getHeaders(),
-                        Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
-                    },
-                });
+            const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
+                headers: {
+                    ...formData.getHeaders(),
+                    Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+                },
+            });
 
-                imageUrl = imgurResponse.data.data.link;
-                break; // Exit the loop if successful
-            } catch (error) {
-                console.error('Imgur upload error:', error.message);
-                if (error.response) {
-                    console.error('Imgur error details:', error.response.data);
-                }
-
-                // If it's the last retry or a non-retryable error, throw the error
-                if (i === retries - 1 || error.response?.status !== 503) {
-                    return res.status(500).json({ error: 'Failed to upload image after retries' });
-                }
-
-                // Wait before retrying
-                console.log(`Retrying upload... (${i + 1})`);
-                await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds before retrying
-            }
+            imageUrl = imgurResponse.data.data.link;
+        } catch (uploadError) {
+            console.error('Image upload error:', uploadError);
+            return res.status(500).json({ 
+                error: 'Failed to upload image', 
+                details: uploadError.response ? uploadError.response.data : uploadError.message 
+            });
         }
 
         // Database insertion
@@ -371,8 +356,11 @@ app.post('/products', upload.single('image'), async (req, res) => {
         res.status(201).json(result.rows[0]);
 
     } catch (error) {
-        console.error('Error while processing product upload:', error);
-        res.status(500).json({ error: 'Failed to upload product', details: error.message });
+        console.error('Server error while processing product upload:', error);
+        res.status(500).json({ 
+            error: 'Failed to upload product', 
+            details: error.message 
+        });
     }
 });
 
@@ -414,29 +402,22 @@ app.get('/products', async (req, res) => {
 // });
 
 // Route to update a product
-app.put('/products/:id', async (req, res) => {
+app.put('/products/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
-    const { name, price, img } = req.body;
-    console.log('Request body:', req.body);
+    const { name, price } = req.body;
+    const img = req.file ? req.file.path : null; // Assuming file upload middleware
 
     try {
-        console.log('Update request received for ID:', id);
-   
         const result = await pool.query(
-            'UPDATE "products" SET name = $1, price = $2, img = $3 WHERE id = $4 RETURNING *',
+            'UPDATE "products" SET name = $1, price = $2, img = COALESCE($3, img) WHERE id = $4 RETURNING *',
             [name, parseFloat(price), img, id]
         );
         
-        console.log('Req:', result);
-
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Product not found' });
         }
         
-        console.log('Req:', result.rows[0]);
-
         res.json(result.rows[0]);
-        console.log('Product updated:');
     } catch (error) {
         console.error('Error updating product:', error);
         res.status(500).json({ error: 'Failed to update product' });
