@@ -182,6 +182,11 @@ const AdminDashboard = () => {
         if (productForm.image) {
             formData.append('image', productForm.image);
         }
+        console.log('Form Data:', formData);
+        
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+        }
     
         try {
             const response = await axios.put(
