@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import Spinner from '../../component/spinner'; 
+import axios from 'axios';
 import './admin.css';
 
 const AdminDashboard = () => {
