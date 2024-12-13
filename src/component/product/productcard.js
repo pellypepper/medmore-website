@@ -27,7 +27,7 @@ const ProductCard = ({ product, addToCart }) => {
          
             addToCart(product, quantity);
             setAlertMessage(`${quantity} ${product.name} added to cart.`);
-            await new Promise((resolve) => setTimeout(resolve, 500));
+            await new Promise((resolve) => setTimeout(resolve, 100));
         } catch (error) {
             console.error('Failed to add to cart:', error);
             setAlertMessage('Failed to add product to cart.');
