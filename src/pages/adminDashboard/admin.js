@@ -123,7 +123,7 @@ const AdminDashboard = () => {
     
 
     const handleAddProduct = async (e) => {
-        console.log(`${process.env.REACT_APP_API_URL}/products`);
+          console.log("https://medmorestore.onrender.com/products");
 
         e.preventDefault();
         const formData = new FormData(); // Use FormData for file uploads
@@ -136,11 +136,11 @@ const AdminDashboard = () => {
             console.log(`${key}: ${value instanceof File ? value.name : value}`);
         }
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/products`, {
+            const response = await fetch("https://medmorestore.onrender.com/products", {
                 method: 'POST',
                 body: formData, // Send FormData
             });
-          
+           console.log(response);
             if (!response.ok) {
                 const errorResponse = await response.json(); // Read the error response
                 console.error('Response Error:', errorResponse);
@@ -176,7 +176,8 @@ const AdminDashboard = () => {
        }
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/products/${productForm.id}`, {
+            console.log("https://medmorestore.onrender.com/products/${productForm.id}");
+            const response = await fetch("https://medmorestore.onrender.com/products/${productForm.id}", {
                 method: 'PUT',
                 body: formData, // Send FormData
             });

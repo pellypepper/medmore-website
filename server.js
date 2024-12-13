@@ -332,6 +332,7 @@ app.post('/products', upload.single('image'), async (req, res) => {
         console.log('added:', result.rows[0]);
 
         res.json(result.rows[0]);
+        console.log("sent products");
     } catch (error) {
         console.error('Error in /products endpoint:', error);
         res.status(500).json({ error: 'Failed to upload image or save product' });
@@ -346,6 +347,7 @@ app.get('/products', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM "products"');
         res.json(result.rows);
+
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ error: 'Failed to fetch products' });
@@ -396,6 +398,7 @@ app.put('/products/:id', async (req, res) => {
         console.log('Req:', result.rows[0]);
 
         res.json(result.rows[0]);
+        console.log('Product updated:');
     } catch (error) {
         console.error('Error updating product:', error);
         res.status(500).json({ error: 'Failed to update product' });
