@@ -8,6 +8,7 @@ const ProductCard = ({ product, addToCart }) => {
     const [alertMessage, setAlertMessage] = useState("");
     const [fadeOut, setFadeOut] = useState(false);
     const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const updateQuantity = (delta) => setQuantity((prev) => Math.max(1, prev + delta));
