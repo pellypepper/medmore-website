@@ -126,7 +126,7 @@ export default function Home({ removeFromCart }) {
         };
 
         fetchCart();
-    }, [loadingCart]);
+    }, []);
 
     useEffect(() => {
         if (alertMessage) {
