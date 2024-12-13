@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./home.css";
 import Navbar from "../../component/navbar/navbar";
 import Footer from "../../component/footer/footer";
@@ -18,7 +18,7 @@ export default function Home({ removeFromCart }) {
     const [fadeOut, setFadeOut] = useState(false);
     const [loadingProducts, setLoadingProducts] = useState(true);
     const [loadingCart, setLoadingCart] = useState(true);
-    const [loading, setLoading] = useState(false);
+
 
     const getUserId = () => {
         let userId = sessionStorage.getItem("user_id");
@@ -33,13 +33,31 @@ export default function Home({ removeFromCart }) {
         sessionStorage.setItem("cart", JSON.stringify(cart));
     };
 
+    const fetchCart = useCallback(async () => {
+        const userId = getUserId(); // Retrieve the user ID
+        setLoadingCart(true); // Start loading
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/${userId}`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const cartData = await response.json();
+            setCart(cartData); // Update cart state
+            updateSessionStorageCart(cartData); // Update session storage
+        } catch (error) {
+            console.error("Error fetching cart:", error);
+            setCart([]); // Reset cart to an empty array on error
+        } finally {
+            setLoadingCart(false); // Stop loading
+        }
+    }, []); 
+
+
     const addToCart = async (product, quantity) => {
         const userId = getUserId();
         const parsedQuantity = parseInt(quantity);
         setCart(prevCart => {
             const existingProductIndex = prevCart.findIndex(item => item.id === product.id);
             let updatedCart;
-
+    
             if (existingProductIndex > -1) {
                 updatedCart = prevCart.map((item, index) =>
                     index === existingProductIndex
@@ -49,11 +67,12 @@ export default function Home({ removeFromCart }) {
             } else {
                 updatedCart = [...prevCart, { ...product, quantity: parsedQuantity }];
             }
-
+    
             return updatedCart; // Return new cart state
         });
-        updateSessionStorageCart(cart);
-
+    
+        updateSessionStorageCart(cart); // Update session storage before server update
+    
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
                 method: "POST",
@@ -71,24 +90,26 @@ export default function Home({ removeFromCart }) {
                     quantity: parsedQuantity,
                 }),
             });
-
+    
             if (!response.ok) {
                 throw new Error("Failed to add item to cart");
             }
-
+    
             const updatedCartFromServer = await response.json();
             if (JSON.stringify(cart) !== JSON.stringify(updatedCartFromServer)) {
                 setCart(updatedCartFromServer);
                 updateSessionStorageCart(updatedCartFromServer);
             }
-            setLoading(true)
-            setLoadingCart(true);
+            
+            // Refetch the cart data after adding an item
+            await fetchCart();// Add this line to refetch the cart data after adding an item
             setAlertMessage(`${product.name} has been added to the cart.`);
         } catch (error) {
             console.error("Error updating cart on server:", error);
             // Optionally revert or handle error
         }
     };
+    
 
 
     useEffect(() => {
@@ -110,26 +131,13 @@ export default function Home({ removeFromCart }) {
         fetchProducts();
     }, []);
 
-    useEffect(() => {
-        const fetchCart = async () => {
-            const userId = getUserId();
-            setLoadingCart(true);
-            try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/${userId}`);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const cartData = await response.json();
-                setCart(cartData);
-                updateSessionStorageCart(cartData);
-            } catch (error) {
-                console.error("Error fetching cart:", error);
-                setCart([]);
-            } finally {
-                setLoadingCart(false);
-            }
-        };
+  useEffect(() => {
+        fetchCart(); // Call fetchCart function
+    }, [fetchCart]); // Add fetchCart to dependencies
 
-        fetchCart();
-    }, [loading]);
+
+
+    
 
     useEffect(() => {
         if (alertMessage) {
