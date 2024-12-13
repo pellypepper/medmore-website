@@ -123,40 +123,81 @@ const AdminDashboard = () => {
     
 
     const handleAddProduct = async (e) => {
-          console.log("https://medmorestore.onrender.com/products");
-
         e.preventDefault();
-        const formData = new FormData(); // Use FormData for file uploads
+        
+        // Detailed logging
+        console.log('Product Form Data:', {
+            name: productForm.name,
+            price: productForm.price,
+            image: productForm.image
+        });
+    
+        // Ensure image is a File object
+        if (!(productForm.image instanceof File)) {
+            console.error('Image is not a File object');
+            alert('Please select a valid image file');
+            return;
+        }
+    
+        const formData = new FormData();
         formData.append('name', productForm.name);
         formData.append('price', productForm.price);
-        formData.append('image', productForm.image); // Append image file
-        console.log(productForm.image);
-         console.log(formData);
-         for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value instanceof File ? value.name : value}`);
+        formData.append('image', productForm.image);
+    
+        // Log FormData contents
+        for (let [key, value] of formData.entries()) {
+            console.log(`FormData - ${key}:`, value);
         }
+    
         try {
             const response = await fetch("https://medmorestore.onrender.com/products", {
                 method: 'POST',
-                body: formData, // Send FormData
-                credentials: 'include',
+                body: formData,
+                credentials: 'include'
             });
-           console.log(response);
+    
+            // Log full response
+            console.log('Full Response:', {
+                status: response.status,
+                statusText: response.statusText,
+                headers: Object.fromEntries(response.headers.entries())
+            });
+    
             if (!response.ok) {
-                const errorResponse = await response.json(); // Read the error response
-                console.error('Response Error:', errorResponse);
-                throw new Error(`Failed to add product: ${response.statusText}`);
+                // Try to get error details
+                const errorText = await response.text();
+                console.error('Error Response Text:', errorText);
+                
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
-
+    
             const newProduct = await response.json();
-            console.log(newProduct);
+            console.log('New Product Added:', newProduct);
+    
             setProducts((prevProducts) => [...prevProducts, newProduct]);
-            setProductForm({ id: '', name: '', price: '', image: null }); // Reset form
+            
+            // Reset form
+            setProductForm({ id: '', name: '', price: '', image: null });
+            
+            alert('Product added successfully!');
+    
         } catch (error) {
-            console.error('Error adding product:', error);
+            console.error('Complete Error Object:', error);
+            console.error('Error adding product:', error.message);
+            alert(`Failed to add product: ${error.message}`);
         }
     };
-
+    
+    // Ensure file selection handler is correct
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        console.log('Selected File:', file);
+        
+        setProductForm(prevState => ({
+            ...prevState,
+            image: file // Directly set the File object
+        }));
+    };
     const handleEditProduct = (product) => {
         setProductForm({ id: product.id, name: product.name, price: product.price, image: null });
         setIsEditing(true);
@@ -182,7 +223,7 @@ const AdminDashboard = () => {
             const response = await fetch("https://medmorestore.onrender.com/product/${productForm.id}", {
                 method: 'PUT',
                 body: formData, // Send FormData
-                credentials: 'include',
+                credentials: 'include
             });
             console.log(response);
 
