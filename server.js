@@ -307,7 +307,6 @@ app.post('/products', upload.single('image'), async (req, res) => {
             body: req.body,
             file: req.file ? req.file.originalname : 'No file'
         });
-        console.log('Image Buffer:', req.file.buffer);
 
         if (!req.file) {
             return res.status(400).json({ error: 'No image uploaded' });
@@ -321,25 +320,44 @@ app.post('/products', upload.single('image'), async (req, res) => {
 
         // Image processing
         const compressedImageBuffer = await sharp(req.file.buffer)
-        .resize({ width: 1920, height: null, fit: 'inside', withoutEnlargement: true })
+            .resize({ width: 1920, height: null, fit: 'inside', withoutEnlargement: true })
             .jpeg({ quality: 80 })
             .toBuffer();
 
-        // Imgur upload
-        const formData = new FormData();
-        formData.append('image', compressedImageBuffer, {
-            filename: req.file.originalname,
-            contentType: 'image/jpeg',
-        });
+        // Retry logic for Imgur upload
+        const retries = 3; // Define the number of retries
+        let imageUrl;
 
-        const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
-            headers: {
-                ...formData.getHeaders(),
-                Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
-            },
-        });
+        for (let i = 0; i < retries; i++) {
+            try {
+                const formData = new FormData();
+                formData.append('image', compressedImageBuffer, {
+                    filename: req.file.originalname,
+                    contentType: 'image/jpeg',
+                });
 
-        const imageUrl = imgurResponse.data.data.link;
+                const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
+                    headers: {
+                        ...formData.getHeaders(),
+                        Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+                    },
+                });
+
+                imageUrl = imgurResponse.data.data.link;
+                break; // Exit the loop if successful
+            } catch (error) {
+                console.error('Imgur upload error:', error.message);
+
+                // If it's the last retry or a non-retryable error, throw the error
+                if (i === retries - 1 || error.response?.status !== 503) {
+                    return res.status(500).json({ error: 'Failed to upload image after retries' });
+                }
+
+                // Wait before retrying
+                console.log(`Retrying upload... (${i + 1})`);
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
+            }
+        }
 
         // Database insertion
         const result = await pool.query(
@@ -350,11 +368,8 @@ app.post('/products', upload.single('image'), async (req, res) => {
         res.status(201).json(result.rows[0]);
 
     } catch (error) {
-        if (i === retries - 1 || error.response?.status !== 503) {
-            throw error; // Re-throw if we've exhausted retries or if it's not a 503
-        }
-        console.log(`Retrying upload... (${i + 1})`);
-        await new Promise(resolve => setTimeout(resolve, 2000)); 
+        console.error('Error while processing product upload:', error);
+        res.status(500).json({ error: 'Failed to upload product', details: error.message });
     }
 });
 

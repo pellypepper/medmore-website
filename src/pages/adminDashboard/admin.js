@@ -140,12 +140,10 @@ const AdminDashboard = () => {
         formData.append('price', productForm.price);
         formData.append('image', productForm.image);
     
-        // Detailed logging
-        console.log('Sending Product Data:', {
-            name: productForm.name,
-            price: productForm.price,
-            image: productForm.image.name
-        });
+      
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value instanceof File ? value.name : value}`);
+        }
     
         try {
             const response = await  axios.post(`${process.env.REACT_APP_API_URL}/products`, formData, {
@@ -205,11 +203,10 @@ const AdminDashboard = () => {
 
         try {
      
-            const response = await fetch(`https://medmorestore.onrender.com/products/${productForm.id}`, {
-                method: 'PUT',          
-                body: formData, // Send FormData
-                credentials: 'include', // Important for cookies/authentication
-            });
+            const response = await  axios.put(`${process.env.REACT_APP_API_URL}/products${productForm.id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }});
             console.log(response);
 
             if (!response.ok) {
