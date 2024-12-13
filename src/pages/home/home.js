@@ -17,7 +17,7 @@ export default function Home({ removeFromCart }) {
     const [products, setProducts] = useState([]);
     const [fadeOut, setFadeOut] = useState(false);
     const [loadingProducts, setLoadingProducts] = useState(true);
-    const [loadingCart, setLoadingCart] = useState(true);
+    const [loadingCart, setLoadingCart] = useState(false);
 
     const getUserId = () => {
         let userId = sessionStorage.getItem("user_id");
@@ -35,21 +35,22 @@ export default function Home({ removeFromCart }) {
     const addToCart = async (product, quantity) => {
         const userId = getUserId();
         const parsedQuantity = parseInt(quantity);
+        setCart(prevCart => {
+            const existingProductIndex = prevCart.findIndex(item => item.id === product.id);
+            let updatedCart;
 
-        const existingProductIndex = cart.findIndex(item => item.id === product.id);
-        let updatedCart;
+            if (existingProductIndex > -1) {
+                updatedCart = prevCart.map((item, index) =>
+                    index === existingProductIndex
+                        ? { ...item, quantity: item.quantity + parsedQuantity }
+                        : item
+                );
+            } else {
+                updatedCart = [...prevCart, { ...product, quantity: parsedQuantity }];
+            }
 
-        if (existingProductIndex > -1) {
-            updatedCart = cart.map((item, index) =>
-                index === existingProductIndex
-                    ? { ...item, quantity: item.quantity + parsedQuantity }
-                    : item
-            );
-        } else {
-            updatedCart = [...cart, { ...product, quantity: parsedQuantity }];
-        }
-         setLoadingCart(true);
-        setCart(updatedCart);
+            return updatedCart; // Return new cart state
+        });
         updateSessionStorageCart(updatedCart);
 
         try {
@@ -79,7 +80,7 @@ export default function Home({ removeFromCart }) {
                 setCart(updatedCartFromServer);
                 updateSessionStorageCart(updatedCartFromServer);
             }
-
+            setLoadingCart(true);
             setAlertMessage(`${product.name} has been added to the cart.`);
         } catch (error) {
             console.error("Error updating cart on server:", error);
