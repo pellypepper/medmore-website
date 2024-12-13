@@ -17,7 +17,8 @@ export default function Home({ removeFromCart }) {
     const [products, setProducts] = useState([]);
     const [fadeOut, setFadeOut] = useState(false);
     const [loadingProducts, setLoadingProducts] = useState(true);
-    const [loadingCart, setLoadingCart] = useState(false);
+    const [loadingCart, setLoadingCart] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const getUserId = () => {
         let userId = sessionStorage.getItem("user_id");
@@ -80,6 +81,7 @@ export default function Home({ removeFromCart }) {
                 setCart(updatedCartFromServer);
                 updateSessionStorageCart(updatedCartFromServer);
             }
+            setLoading(true)
             setLoadingCart(true);
             setAlertMessage(`${product.name} has been added to the cart.`);
         } catch (error) {
@@ -127,7 +129,7 @@ export default function Home({ removeFromCart }) {
         };
 
         fetchCart();
-    }, []);
+    }, [loading]);
 
     useEffect(() => {
         if (alertMessage) {
@@ -152,9 +154,9 @@ export default function Home({ removeFromCart }) {
         }
     }, [searchQuery, products]);
 
-    // if (loadingCart) {
-    //     return <Spinner />;
-    // }
+    if (loadingCart) {
+        return <Spinner />;
+    }
 
     return (
         <main className="Home">
