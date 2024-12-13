@@ -323,15 +323,15 @@ app.post('/products', upload.single('image'), async (req, res) => {
             filename: req.file.originalname,
             contentType: 'image/jpeg',
         });
-
-        const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
+         console.log('Imgur formData:', formData);
+        const imgurResponse = await axios.post('https://api.imgur.com/3/upload', formData, {
             headers: {
                 ...formData.getHeaders(),
                 Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
             },
             timeout: 10000 // 10 second timeout
         });
-
+         console.log('Imgur response:', imgurResponse.data);
         const imageUrl = imgurResponse.data.data.link;
 
         // Database insertion
