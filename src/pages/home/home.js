@@ -51,7 +51,7 @@ export default function Home({ removeFromCart }) {
 
             return updatedCart; // Return new cart state
         });
-        updateSessionStorageCart(updatedCart);
+        updateSessionStorageCart(cart);
 
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
