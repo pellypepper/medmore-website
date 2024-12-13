@@ -424,7 +424,7 @@ app.put('/products/:id', async (req, res) => {
    
         const result = await pool.query(
             'UPDATE "products" SET name = $1, price = $2, img = $3 WHERE id = $4 RETURNING *',
-            [name, price, img, id]
+            [name, parseFloat(price), img, id]
         );
         
         console.log('Req:', result);
