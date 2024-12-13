@@ -139,6 +139,12 @@ const AdminDashboard = () => {
         formData.append('name', productForm.name);
         formData.append('price', productForm.price);
         formData.append('image', productForm.image);
+        console.log('Form Data:', formData);
+        
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+        }
+    
     
         try {
             const response = await axios.post(
