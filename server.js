@@ -309,6 +309,7 @@ app.post('/products', upload.single('image'), async (req, res) => {
             body: req.body,
             file: req.file ? req.file.originalname : 'No file'
         });
+        console.log('Image Buffer:', req.file.buffer);
 
         if (!req.file) {
             return res.status(400).json({ error: 'No image uploaded' });
@@ -322,7 +323,7 @@ app.post('/products', upload.single('image'), async (req, res) => {
 
         // Image processing
         const compressedImageBuffer = await sharp(req.file.buffer)
-            .resize(1920, { fit: 'inside', withoutEnlargement: true })
+        .resize({ width: 1920, height: null, fit: 'inside', withoutEnlargement: true })
             .jpeg({ quality: 80 })
             .toBuffer();
 
