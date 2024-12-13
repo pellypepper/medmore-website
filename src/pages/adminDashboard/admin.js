@@ -163,6 +163,7 @@ const AdminDashboard = () => {
             alert('Product added successfully!');
     
         } catch (error) {
+            console.log(error.message);
             console.error('Complete Error:', error.response ? error.response.data : error.message);
             alert(`Failed to add product: ${error.response ? error.response.data.error : error.message}`);
         }
