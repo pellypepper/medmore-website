@@ -32,7 +32,8 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
         'Content-Type', 
-        'Authorization'
+        'Authorization',
+        'X-Requested-With'
     ],
     credentials: true
 }));
@@ -297,55 +298,41 @@ const upload = multer({ storage: multer.memoryStorage() }); // Use memory storag
 // Endpoint to handle image uploads
 const FormData = require('form-data'); // Ensure you have 'form-data' installed
 
-
 app.post('/products', upload.single('image'), async (req, res) => {
     try {
-        console.log('Received Product Data:', {
-            body: req.body,
-            file: req.file ? req.file.originalname : 'No file'
-        });
-
-        // Validate inputs
         const { name, price } = req.body;
+        
+        // Input validation
         if (!name || !price) {
             return res.status(400).json({ error: 'Name and price are required' });
         }
 
-        // Check if file exists
         if (!req.file) {
             return res.status(400).json({ error: 'No image uploaded' });
         }
 
-        // Image processing with error handling
-        let imageUrl;
-        try {
-            const compressedImageBuffer = await sharp(req.file.buffer)
-                .resize({ width: 1920, height: null, fit: 'inside', withoutEnlargement: true })
-                .jpeg({ quality: 80 })
-                .toBuffer();
+        // Image processing
+        const compressedImageBuffer = await sharp(req.file.buffer)
+            .resize({ width: 1920, height: null, fit: 'inside', withoutEnlargement: true })
+            .jpeg({ quality: 80 })
+            .toBuffer();
 
-            // Imgur upload with comprehensive error handling
-            const formData = new FormData();
-            formData.append('image', compressedImageBuffer, {
-                filename: req.file.originalname,
-                contentType: 'image/jpeg',
-            });
+        // Imgur upload
+        const formData = new FormData();
+        formData.append('image', compressedImageBuffer, {
+            filename: req.file.originalname,
+            contentType: 'image/jpeg',
+        });
 
-            const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
-                headers: {
-                    ...formData.getHeaders(),
-                    Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
-                },
-            });
+        const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
+            headers: {
+                ...formData.getHeaders(),
+                Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+            },
+            timeout: 10000 // 10 second timeout
+        });
 
-            imageUrl = imgurResponse.data.data.link;
-        } catch (uploadError) {
-            console.error('Image upload error:', uploadError);
-            return res.status(500).json({ 
-                error: 'Failed to upload image', 
-                details: uploadError.response ? uploadError.response.data : uploadError.message 
-            });
-        }
+        const imageUrl = imgurResponse.data.data.link;
 
         // Database insertion
         const result = await pool.query(
@@ -356,7 +343,7 @@ app.post('/products', upload.single('image'), async (req, res) => {
         res.status(201).json(result.rows[0]);
 
     } catch (error) {
-        console.error('Server error while processing product upload:', error);
+        console.error('Product upload error:', error);
         res.status(500).json({ 
             error: 'Failed to upload product', 
             details: error.message 
