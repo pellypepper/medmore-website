@@ -48,7 +48,7 @@ export default function Home({ removeFromCart }) {
         } else {
             updatedCart = [...cart, { ...product, quantity: parsedQuantity }];
         }
-
+         setLoadingCart(true);
         setCart(updatedCart);
         updateSessionStorageCart(updatedCart);
 
@@ -126,7 +126,7 @@ export default function Home({ removeFromCart }) {
         };
 
         fetchCart();
-    }, []);
+    }, [loadingCart]);
 
     useEffect(() => {
         if (alertMessage) {
