@@ -29,9 +29,7 @@ const PORT = 10000;
 
 app.use(cors({
     origin: [
-        'https://medmorestore.onrender.com',
-        'http://localhost:3000', // For local development
-        'https://www.medmorestore.onrender.com'
+        process.env.REACT_APP_API_URL
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
@@ -352,11 +350,11 @@ app.post('/products', upload.single('image'), async (req, res) => {
         res.status(201).json(result.rows[0]);
 
     } catch (error) {
-        console.error('Product Upload Error:', error);
-        res.status(500).json({ 
-            error: 'Failed to upload product',
-            details: error.message 
-        });
+        if (i === retries - 1 || error.response?.status !== 503) {
+            throw error; // Re-throw if we've exhausted retries or if it's not a 503
+        }
+        console.log(`Retrying upload... (${i + 1})`);
+        await new Promise(resolve => setTimeout(resolve, 2000)); 
     }
 });
 

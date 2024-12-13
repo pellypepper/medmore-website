@@ -147,11 +147,10 @@ const AdminDashboard = () => {
         });
     
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/products`, {
-                method: 'POST',
-                body: formData,
-                credentials: 'include' // Important for cookies/authentication
-            });
+            const response = await  axios.post(`${process.env.REACT_APP_API_URL}/products`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }});
     
             console.log('Full Response:', {
                 status: response.status,
