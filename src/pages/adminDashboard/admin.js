@@ -203,7 +203,7 @@ const AdminDashboard = () => {
 
         try {
      
-            const response = await  axios.put(`${process.env.REACT_APP_API_URL}/products${productForm.id}`, formData, {
+            const response = await  axios.put(`${process.env.REACT_APP_API_URL}/products/${productForm.id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }});

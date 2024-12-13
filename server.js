@@ -347,6 +347,9 @@ app.post('/products', upload.single('image'), async (req, res) => {
                 break; // Exit the loop if successful
             } catch (error) {
                 console.error('Imgur upload error:', error.message);
+                if (error.response) {
+                    console.error('Imgur error details:', error.response.data);
+                }
 
                 // If it's the last retry or a non-retryable error, throw the error
                 if (i === retries - 1 || error.response?.status !== 503) {
@@ -355,7 +358,7 @@ app.post('/products', upload.single('image'), async (req, res) => {
 
                 // Wait before retrying
                 console.log(`Retrying upload... (${i + 1})`);
-                await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
+                await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds before retrying
             }
         }
 
@@ -372,6 +375,7 @@ app.post('/products', upload.single('image'), async (req, res) => {
         res.status(500).json({ error: 'Failed to upload product', details: error.message });
     }
 });
+
 
 
 
