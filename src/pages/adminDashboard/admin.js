@@ -109,33 +109,28 @@ const AdminDashboard = () => {
     };
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0]; // Get the selected file
+        const file = e.target.files[0];
+        console.log('Selected File:', file);
+        
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setProductForm({ ...productForm, image: file }); // Set img file
-     
-            };
-            reader.readAsDataURL(file); // Read the file as a Data URL
+            setProductForm(prevState => ({
+                ...prevState,
+                image: file // Directly set the File object
+            }));
         }
     };
     
-    
-
     const handleAddProduct = async (e) => {
         e.preventDefault();
         
-        // Detailed logging
-        console.log('Product Form Data:', {
-            name: productForm.name,
-            price: productForm.price,
-            image: productForm.image
-        });
+        // Comprehensive validation
+        if (!productForm.name || !productForm.price) {
+            alert('Please enter product name and price');
+            return;
+        }
     
-        // Ensure image is a File object
-        if (!(productForm.image instanceof File)) {
-            console.error('Image is not a File object');
-            alert('Please select a valid image file');
+        if (!productForm.image) {
+            alert('Please select an image');
             return;
         }
     
@@ -144,29 +139,29 @@ const AdminDashboard = () => {
         formData.append('price', productForm.price);
         formData.append('image', productForm.image);
     
-        // Log FormData contents
-        for (let [key, value] of formData.entries()) {
-            console.log(`FormData - ${key}:`, value);
-        }
+        // Detailed logging
+        console.log('Sending Product Data:', {
+            name: productForm.name,
+            price: productForm.price,
+            image: productForm.image.name
+        });
     
         try {
-            const response = await fetch("https://medmorestore.onrender.com/products", {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/products`, {
                 method: 'POST',
                 body: formData,
-                credentials: 'include'
+                credentials: 'include' // Important for cookies/authentication
             });
     
-            // Log full response
             console.log('Full Response:', {
                 status: response.status,
-                statusText: response.statusText,
-                headers: Object.fromEntries(response.headers.entries())
+                statusText: response.statusText
             });
     
             if (!response.ok) {
-                // Try to get error details
+                // Try to parse error response
                 const errorText = await response.text();
-                console.error('Error Response Text:', errorText);
+                console.error('Error Response:', errorText);
                 
                 throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
@@ -174,6 +169,7 @@ const AdminDashboard = () => {
             const newProduct = await response.json();
             console.log('New Product Added:', newProduct);
     
+            // Update products list
             setProducts((prevProducts) => [...prevProducts, newProduct]);
             
             // Reset form
@@ -182,29 +178,18 @@ const AdminDashboard = () => {
             alert('Product added successfully!');
     
         } catch (error) {
-            console.error('Complete Error Object:', error);
-            console.error('Error adding product:', error.message);
+            console.error('Complete Error:', error);
             alert(`Failed to add product: ${error.message}`);
         }
     };
     
-    // Ensure file selection handler is correct
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        console.log('Selected File:', file);
-        
-        setProductForm(prevState => ({
-            ...prevState,
-            image: file // Directly set the File object
-        }));
-    };
     const handleEditProduct = (product) => {
         setProductForm({ id: product.id, name: product.name, price: product.price, image: null });
         setIsEditing(true);
     };
 
     const handleUpdateProduct = async (e) => {
-        console.log("https://medmorestore.onrender.com/products/${productForm.id}");
+        console.log(`https://medmorestore.onrender.com/products/${id}`);
         e.preventDefault();
         const formData = new FormData();
         formData.append('name', productForm.name);
@@ -220,10 +205,10 @@ const AdminDashboard = () => {
 
         try {
      
-            const response = await fetch("https://medmorestore.onrender.com/product/${productForm.id}", {
+            const response = await fetch(`https://medmorestore.onrender.com/product/${id}`, {
                 method: 'PUT',
                 body: formData, // Send FormData
-                credentials: 'include
+                credentials: 'include', // Important for cookies/authentication
             });
             console.log(response);
 

@@ -27,17 +27,16 @@ const pool = require('./db');
 const app = express();
 const PORT = 10000;
 
-// Middleware
 app.use(cors({
     origin: [
-        'https://medmorestore.onrender.com'
+        'https://medmorestore.onrender.com',
+        'http://localhost:3000', // For local development
+        'https://www.medmorestore.onrender.com'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
         'Content-Type', 
-        'Authorization', 
-        'Access-Control-Allow-Headers', 
-        'Access-Control-Allow-Origin'
+        'Authorization'
     ],
     credentials: true
 }));
@@ -304,23 +303,34 @@ const FormData = require('form-data'); // Ensure you have 'form-data' installed
 
 
 app.post('/products', upload.single('image'), async (req, res) => {
-    console.log('Request body:', req.body);
-    console.log('Request file:', req.file);
-                                                   
-    if (!req.file) {
-        return res.status(400).json({ error: 'No image uploaded' });
-    }
-
     try {
+        // Comprehensive logging
+        console.log('Received Product Data:', {
+            body: req.body,
+            file: req.file ? req.file.originalname : 'No file'
+        });
+
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image uploaded' });
+        }
+
+        // Validate inputs
+        const { name, price } = req.body;
+        if (!name || !price) {
+            return res.status(400).json({ error: 'Name and price are required' });
+        }
+
+        // Image processing
         const compressedImageBuffer = await sharp(req.file.buffer)
-            .resize(1920)
+            .resize(1920, { fit: 'inside', withoutEnlargement: true })
             .jpeg({ quality: 80 })
             .toBuffer();
 
+        // Imgur upload
         const formData = new FormData();
         formData.append('image', compressedImageBuffer, {
             filename: req.file.originalname,
-            contentType: req.file.mimetype,
+            contentType: 'image/jpeg',
         });
 
         const imgurResponse = await axios.post('https://api.imgur.com/3/image', formData, {
@@ -330,21 +340,22 @@ app.post('/products', upload.single('image'), async (req, res) => {
             },
         });
 
-        const { name, price } = req.body;
         const imageUrl = imgurResponse.data.data.link;
-        console.log('Imgur response:', imgurResponse.data); 
 
+        // Database insertion
         const result = await pool.query(
             'INSERT INTO "products" (img, name, price) VALUES ($1, $2, $3) RETURNING *',
-            [imageUrl, name, price]
+            [imageUrl, name, parseFloat(price)]
         );
-        console.log('added:', result.rows[0]);
 
-        res.json(result.rows[0]);
-        console.log("sent products");
+        res.status(201).json(result.rows[0]);
+
     } catch (error) {
-        console.error('Error in /products endpoint:', error);
-        res.status(500).json({ error: 'Failed to upload image or save product' });
+        console.error('Product Upload Error:', error);
+        res.status(500).json({ 
+            error: 'Failed to upload product',
+            details: error.message 
+        });
     }
 });
 
