@@ -10,7 +10,7 @@ const AdminDashboard = () => {
     const [salesData, setSalesData] = useState({ sales_count: 0, total: 0, total_buyer: 0 });
     const [loading, setLoading] = useState(true);
     const [activeMenu, setActiveMenu] = useState('Dashboard'); 
-    const [productForm, setProductForm] = useState({ id: '', name: '', price: '', img: null }); // Change img to null
+    const [productForm, setProductForm] = useState({ id: '', name: '', price: '', image: null }); // Change img to null
     const [isEditing, setIsEditing] = useState(false);
     const chartRef = useRef(null); 
     const navigate = useNavigate();
@@ -113,8 +113,8 @@ const AdminDashboard = () => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setProductForm({ ...productForm, img: file }); // Set img file
-                setProductForm((prevForm) => ({ ...prevForm, imgPreview: reader.result })); // Set preview
+                setProductForm({ ...productForm, image: file }); // Set img file
+     
             };
             reader.readAsDataURL(file); // Read the file as a Data URL
         }
@@ -129,8 +129,8 @@ const AdminDashboard = () => {
         const formData = new FormData(); // Use FormData for file uploads
         formData.append('name', productForm.name);
         formData.append('price', productForm.price);
-        formData.append('image', productForm.img); // Append image file
-        console.log(productForm.img);
+        formData.append('image', productForm.image); // Append image file
+        console.log(productForm.image);
          console.log(formData);
          for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value instanceof File ? value.name : value}`);
@@ -150,34 +150,35 @@ const AdminDashboard = () => {
             const newProduct = await response.json();
             console.log(newProduct);
             setProducts((prevProducts) => [...prevProducts, newProduct]);
-            setProductForm({ id: '', name: '', price: '', img: null }); // Reset form
+            setProductForm({ id: '', name: '', price: '', image: null }); // Reset form
         } catch (error) {
             console.error('Error adding product:', error);
         }
     };
 
     const handleEditProduct = (product) => {
-        setProductForm({ id: product.id, name: product.name, price: product.price, img: null });
+        setProductForm({ id: product.id, name: product.name, price: product.price, image: null });
         setIsEditing(true);
     };
 
     const handleUpdateProduct = async (e) => {
+        console.log("https://medmorestore.onrender.com/products/${id}");
         e.preventDefault();
         const formData = new FormData();
         formData.append('name', productForm.name);
         formData.append('price', productForm.price);
-        if (productForm.img) {
-            formData.append('image', productForm.img); // Append updated image if exists
+        if (productForm.image) {
+            formData.append('image', productForm.image); // Append updated image if exists
         }
-        console.log(productForm.img);
+        console.log(productForm.image);
         console.log(formData);
         for (let [key, value] of formData.entries()) {
            console.log(`${key}: ${value instanceof File ? value.name : value}`);
        }
 
         try {
-            console.log("https://medmorestore.onrender.com/products/${productForm.id}");
-            const response = await fetch("https://medmorestore.onrender.com/products/${productForm.id}", {
+     
+            const response = await fetch("https://medmorestore.onrender.com/products/${id}", {
                 method: 'PUT',
                 body: formData, // Send FormData
             });
@@ -193,7 +194,7 @@ const AdminDashboard = () => {
                     product.id === updatedProduct.id ? updatedProduct : product
                 )
             );
-            setProductForm({ id: '', name: '', price: '', img: null }); // Reset form
+            setProductForm({ id: '', name: '', price: '', image: null }); // Reset form
             setIsEditing(false);
         } catch (error) {
             console.error('Error updating product:', error);
@@ -328,7 +329,7 @@ const AdminDashboard = () => {
 
                             <input
                                 type="file" // Change to file input
-                                name="img"
+                                name="image"
         
                                 placeholder="Product Image"
                                 accept="image/*" // Accept image files
