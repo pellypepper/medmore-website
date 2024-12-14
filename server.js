@@ -305,7 +305,27 @@ const upload = multer({ storage: multer.memoryStorage() }); // Use memory storag
 // Endpoint to handle image uploads
 const FormData = require('form-data'); // Ensure you have 'form-data' installed
 
+app.post('/token', (req, res) => {
+    const { accessToken } = req.body; // Expecting the token from the frontend
+
+    if (!accessToken) {
+        return res.status(400).json({ message: 'Access token is required' });
+    }
+
+    // Store the token in the session or database
+    req.session.imgurAccessToken = accessToken; // Store in session for demonstration
+    // Alternatively, save to a database for persistent storage if needed
+
+    console.log('Access Token Received:', accessToken);
+    res.status(200).json({ message: 'Access token received and stored' });
+});
+
+
 app.post('/products', upload.single('image'), async (req, res) => {
+    const accessToken = req.session.imgurAccessToken;
+    if (!accessToken) {
+        return res.status(401).json({ message: 'Unauthorized: No access token found' });
+    }
     try {
         const { name, price } = req.body;
         if (!name || !price || !req.file) {
@@ -320,14 +340,15 @@ app.post('/products', upload.single('image'), async (req, res) => {
 
         // Upload to Imgur
         const base64Image = compressedImageBuffer.toString('base64');
-        const imgurResponse = await axios.post(
-            'https://api.imgur.com/3/image',
-            { image: base64Image, type: 'base64' },
-            {
-                headers: { Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}` },
-                timeout: 10000,
-            }
-        );
+        const imgurResponse = await axios.post('https://api.imgur.com/3/image', {
+            // Replace with your image data
+            image: 'base64Image',
+            type: 'base64',
+        }, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
         const imageUrl = imgurResponse.data.data.link;
 
         // Save to database

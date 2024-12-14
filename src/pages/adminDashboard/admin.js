@@ -16,6 +16,15 @@ const AdminDashboard = () => {
     const chartRef = useRef(null); 
     const navigate = useNavigate();
 
+    const CLIENT_ID = process.env.CLIENT_ID; // Replace with your actual Client ID
+
+    const handleImgurAuth = () => {
+        const redirectUri = `https://medmorestore.onrender.com/callback`; // This should match your redirect URL
+        const authUrl = `https://api.imgur.com/oauth2/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${redirectUri}`;
+        
+        window.location.href = authUrl; // Redirect to Imgur for authorization
+    };
+
     const handleLogout = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/logout`, {
@@ -135,23 +144,29 @@ const AdminDashboard = () => {
             return;
         }
     
-        const formData = new FormData();
-        formData.append('name', productForm.name);
-        formData.append('price', productForm.price);
-        formData.append('image', productForm.image);
-        console.log('Form Data:', formData);
+        // const formData = new FormData();
+     
+        // formData.append('image', productForm.image);
+        // console.log('Form Data:', formData);
         
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }
-    
+        // for (const [key, value] of formData.entries()) {
+        //     console.log(`${key}:`, value);
+        // }
+        handleImgurAuth();
     
         try {
+            const token = localStorage.getItem('imgurAccessToken'); // Get access token from local storage
+            const formData = new FormData();
+            formData.append('image', productForm.image);
+            formData.append('name', productForm.name);
+            formData.append('price', productForm.price);
+            
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}/products`, 
                 formData, 
                 {
                     headers: {
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data',
                     }
                 }

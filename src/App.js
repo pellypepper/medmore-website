@@ -13,6 +13,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import Checkout from "./pages/checkout/checkout";
 import AdminDashboard from './pages/adminDashboard/admin';
 import OrderConfirmation from './pages/order/order';
+import ImgurCallback from './pages/imgCallback';
 
 const stripePromise = loadStripe('pk_test_51QRXGxBlRPuLLUxXKbMlflbrE4ghJsLt9PkDkh47BNvc9sKbSsF7Fi48bZVeC29Za5LKKIaHe9g935Jeh2Mj1vc600gVvRCsQw'); // Use your actual publishable key
 
@@ -84,6 +85,7 @@ function App() {
                 <Route path="/detail" element={<Detail/>} />
                 <Route path="/display" element={<ProductDisplay/>} />
                 <Route path="/order" element={<OrderConfirmation />} />
+                <Route path="/imgCallback" element={<ImgurCallback />} />
             </Routes>
         </Router>
         </Elements>
