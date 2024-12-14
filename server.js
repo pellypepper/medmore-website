@@ -10,6 +10,7 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
+const rateLimit = require('express-rate-limit');
 const pgSession = require('connect-pg-simple')(session); 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
     apiVersion: '2020-08-27',
@@ -58,6 +59,12 @@ app.use(session({
   }));
 
 
+  app.use(
+    rateLimit({
+        windowMs: 1 * 60 * 1000, // 1 minute
+        max: 50, // Limit each IP to 50 requests per minute
+    })
+);
 
 
 
@@ -301,54 +308,37 @@ const FormData = require('form-data'); // Ensure you have 'form-data' installed
 app.post('/products', upload.single('image'), async (req, res) => {
     try {
         const { name, price } = req.body;
-        
-        // Input validation
-        if (!name || !price) {
-            return res.status(400).json({ error: 'Name and price are required' });
+        if (!name || !price || !req.file) {
+            return res.status(400).json({ error: 'Name, price, and image are required' });
         }
 
-        if (!req.file) {
-            return res.status(400).json({ error: 'No image uploaded' });
-        }
-
-        // Image processing
+        // Resize and compress image
         const compressedImageBuffer = await sharp(req.file.buffer)
-            .resize({ width: 1920, height: null, fit: 'inside', withoutEnlargement: true })
-            .jpeg({ quality: 80 })
+            .resize({ width: 1280, fit: 'inside', withoutEnlargement: true })
+            .jpeg({ quality: 70 })
             .toBuffer();
 
-        // Imgur upload
-        const formData = new FormData();
-        formData.append('image', compressedImageBuffer, {
-            filename: req.file.originalname,
-            contentType: 'image/jpeg',
-        });
-         console.log('Imgur formData:', formData);
-        const imgurResponse = await axios.post('https://api.imgur.com/3/upload', formData, {
-            headers: {
-                ...formData.getHeaders(),
-                Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
-       
-            },
-            timeout: 10000 // 10 second timeout
-        });
-        console.log('Imgur response:', imgurResponse.data);
+        // Upload to Imgur
+        const base64Image = compressedImageBuffer.toString('base64');
+        const imgurResponse = await axios.post(
+            'https://api.imgur.com/3/image',
+            { image: base64Image, type: 'base64' },
+            {
+                headers: { Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}` },
+                timeout: 10000,
+            }
+        );
         const imageUrl = imgurResponse.data.data.link;
-            
-        // Database insertion
+
+        // Save to database
         const result = await pool.query(
             'INSERT INTO "products" (img, name, price) VALUES ($1, $2, $3) RETURNING *',
             [imageUrl, name, parseFloat(price)]
         );
-          console.log("added")
         res.status(201).json(result.rows[0]);
-
     } catch (error) {
-        console.error('Product upload error:', error);
-        res.status(500).json({ 
-            error: 'Failed to upload product', 
-            details: error.message 
-        });
+        console.error('Product upload error:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to upload product', details: error.message });
     }
 });
 
