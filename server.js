@@ -451,7 +451,7 @@ WHERE ci.user_id = $1
 
         if (cartItems.rows.length === 0) {
             console.log(`No cart items found for user: ${userId}`);
-            return res.status(404).json({ error: 'No cart items found for this user' });
+            return res.json([]); // Return an empty array
         }
 
         const updatedCart = cartItems.rows.map(item => ({
