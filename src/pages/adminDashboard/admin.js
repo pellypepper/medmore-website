@@ -16,15 +16,6 @@ const AdminDashboard = () => {
     const chartRef = useRef(null); 
     const navigate = useNavigate();
 
-    const CLIENT_ID = process.env.IMGUR_CLIENT_ID; // Replace with your actual Client ID
-
-    const handleImgurAuth = () => {
-        const redirectUri = `${window.location.origin}/callback`;
- 
-        const authUrl = `https://api.imgur.com/oauth2/authorize?client_id=a0b2bfc4f4c69cf&response_type=token&redirect_uri=${redirectUri}`;
-        
-        window.location.href = authUrl; // Redirect to Imgur for authorization
-    };
 
     const handleLogout = async () => {
         try {
@@ -153,21 +144,22 @@ const AdminDashboard = () => {
         // for (const [key, value] of formData.entries()) {
         //     console.log(`${key}:`, value);
         // }
-        handleImgurAuth();
+        const formData = new FormData();
+        formData.append('image', productForm.image);
+        formData.append('name', productForm.name);
+        formData.append('price', productForm.price);
+        
+
     
         try {
-            const token = localStorage.getItem('imgurAccessToken'); // Get access token from local storage
-            const formData = new FormData();
-            formData.append('image', productForm.image);
-            formData.append('name', productForm.name);
-            formData.append('price', productForm.price);
-            
+
+       
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}/products`, 
                 formData, 
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+            
                         'Content-Type': 'multipart/form-data',
                     }
                 }

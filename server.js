@@ -2,9 +2,11 @@ require('dotenv').config(); // Load environment variables
 const express = require('express');
 const stream = require('stream');
 const jwt = require('jsonwebtoken');
+const cloudinary = require('cloudinary').v2;
 const sharp = require('sharp');
 const axios = require('axios'); 
 const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
@@ -59,12 +61,24 @@ app.use(session({
   }));
 
 
-  app.use(
-    rateLimit({
-        windowMs: 1 * 60 * 1000, // 1 minute
-        max: 50, // Limit each IP to 50 requests per minute
-    })
-);
+
+
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'test', // The folder in your Cloudinary account
+      allowed_formats: ['jpg', 'png', 'jpeg', 'gif'], // Allowed file formats
+    },
+  });
 
 
 
@@ -300,56 +314,31 @@ app.post('/create-payment-intent', async (req, res) => {
 });
 
 
-const upload = multer({ storage: multer.memoryStorage() }); // Use memory storage for multer
+const upload = multer({ storage: storage }); // Use memory storage for multer
 
 // Endpoint to handle image uploads
 const FormData = require('form-data'); // Ensure you have 'form-data' installed
 
-app.post('/token', (req, res) => {
-    const { accessToken } = req.body; // Expecting the token from the frontend
-
-    if (!accessToken) {
-        return res.status(400).json({ message: 'Access token is required' });
-    }
-
-    // Store the token in the session or database
-    req.session.imgurAccessToken = accessToken; // Store in session for demonstration
-    // Alternatively, save to a database for persistent storage if needed
-
-    console.log('Access Token Received:', accessToken);
-    res.status(200).json({ message: 'Access token received and stored' });
-});
 
 
 app.post('/products', upload.single('image'), async (req, res) => {
-    const accessToken = req.session.imgurAccessToken;
-    if (!accessToken) {
-        return res.status(401).json({ message: 'Unauthorized: No access token found' });
-    }
+   
     try {
         const { name, price } = req.body;
         if (!name || !price || !req.file) {
             return res.status(400).json({ error: 'Name, price, and image are required' });
         }
 
-        // Resize and compress image
-        const compressedImageBuffer = await sharp(req.file.buffer)
-            .resize({ width: 1280, fit: 'inside', withoutEnlargement: true })
-            .jpeg({ quality: 70 })
-            .toBuffer();
+        // // Resize and compress image
+        // const compressedImageBuffer = await sharp(req.file.buffer)
+        //     .resize({ width: 1280, fit: 'inside', withoutEnlargement: true })
+        //     .jpeg({ quality: 70 })
+        //     .toBuffer();
 
-        // Upload to Imgur
-        const base64Image = compressedImageBuffer.toString('base64');
-        const imgurResponse = await axios.post('https://api.imgur.com/3/image', {
-            // Replace with your image data
-            image: 'base64Image',
-            type: 'base64',
-        }, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        const imageUrl = imgurResponse.data.data.link;
+        console.log('File uploaded:', req.file.originalname);
+        console.log('File size:', req.file.size);
+        console.log('File path:', req.file.path);
+        const imageUrl = req.file.path;
 
         // Save to database
         const result = await pool.query(
