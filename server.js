@@ -328,18 +328,19 @@ app.post('/products', upload.single('image'), async (req, res) => {
             headers: {
                 ...formData.getHeaders(),
                 Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+       
             },
             timeout: 10000 // 10 second timeout
         });
-         console.log('Imgur response:', imgurResponse.data);
+        console.log('Imgur response:', imgurResponse.data);
         const imageUrl = imgurResponse.data.data.link;
-
+            
         // Database insertion
         const result = await pool.query(
             'INSERT INTO "products" (img, name, price) VALUES ($1, $2, $3) RETURNING *',
             [imageUrl, name, parseFloat(price)]
         );
-
+          console.log("added")
         res.status(201).json(result.rows[0]);
 
     } catch (error) {
