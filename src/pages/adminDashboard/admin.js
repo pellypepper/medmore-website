@@ -20,7 +20,7 @@ const AdminDashboard = () => {
 
     const handleImgurAuth = () => {
         const redirectUri = `https://medmorestore.onrender.com/callback`; // This should match your redirect URL
-        const authUrl = `https://api.imgur.com/oauth2/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${redirectUri}`;
+        const authUrl = `https://api.imgur.com/oauth2/authorize?client_id=a0b2bfc4f4c69cf&response_type=token&redirect_uri=${redirectUri}`;
         
         window.location.href = authUrl; // Redirect to Imgur for authorization
     };
