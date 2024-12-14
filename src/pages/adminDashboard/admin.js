@@ -16,7 +16,7 @@ const AdminDashboard = () => {
     const chartRef = useRef(null); 
     const navigate = useNavigate();
 
-    const CLIENT_ID = process.env.CLIENT_ID; // Replace with your actual Client ID
+    const CLIENT_ID = process.env.IMGUR_CLIENT_ID; // Replace with your actual Client ID
 
     const handleImgurAuth = () => {
         const redirectUri = `https://medmorestore.onrender.com/callback`; // This should match your redirect URL
