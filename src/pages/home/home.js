@@ -37,7 +37,7 @@ export default function Home({ removeFromCart }) {
         const userId = getUserId(); // Retrieve the user ID
         setLoadingCart(true); // Start loading
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/${userId}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/cart/${userId}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const cartData = await response.json();
             setCart(cartData); // Update cart state
