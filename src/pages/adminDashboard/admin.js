@@ -296,7 +296,7 @@ const AdminDashboard = () => {
                             <div className="analytics-cards mt-2">
                                 <div className="analytics-card">
                                     <h4>Total Revenue</h4>
-                                    <p>${salesData.total}</p>
+                                    <p>£{salesData.total}</p>
                                 </div>
                                 <div className="analytics-card">
                                     <h4>Total Orders</h4>
@@ -328,8 +328,8 @@ const AdminDashboard = () => {
                                 {topSellingProducts.map(product => (
                                     <div className="top-product-card" key={product.id}>
                                         <h4>{product.name}</h4>
-                                        <p className="product-price">Price: ${product.price}</p>
-                                        <p className="total-sales">Total Sales: ${product.totalSales}</p>
+                                        <p className="product-price">Price: £{product.price}</p>
+                                        <p className="total-sales">Total Sales: £{product.totalSales}</p>
                                         <div className="actions">
                                             <button className="view-button">View</button>
                                             <button className="edit-button" onClick={() => handleEditProduct(product)}>Edit</button>
@@ -382,7 +382,7 @@ const AdminDashboard = () => {
                                 <div key={product.id} className="product-card">
                                     <img src={product.img} alt={product.name} />
                                     <h4>{product.name}</h4>
-                                    <p>Price: ${product.price}</p>
+                                    <p>Price: £{product.price}</p>
                                     <div className="actions">
                                         <button onClick={() => handleEditProduct(product)}>Edit</button>
                                         <button onClick={() => handleDeleteProduct(product.id)}>Delete</button>

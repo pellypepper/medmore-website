@@ -36,7 +36,9 @@ export default function Payment() {
 
     return (
         <main className="payment-main">
+            <section>
             <Navbar />
+            </section>
             <section className="payment-section">
                 <h2 className="payment-title">Choose Payment Method</h2>
                 {loading && <Spinner />} {/* Show the spinner when loading */}
@@ -73,7 +75,9 @@ export default function Payment() {
                     </div>
                 </form>
             </section>
-            <Footer />
+    <section>
+    <Footer />
+    </section>
         </main>
     );
 }
