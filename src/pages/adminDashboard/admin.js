@@ -181,6 +181,7 @@ const AdminDashboard = () => {
             setProductForm({ id: '', name: '', price: '', image: null });
             
             setAlertMessage('Product added successfully!');
+
          
     
         } catch (error) {
@@ -188,7 +189,9 @@ const AdminDashboard = () => {
             console.error('Complete Error:', error.response ? error.response.data : error.message);
             alert();
             setAlertMessage(`Failed to add product: ${error.response ? error.response.data.error : error.message}`);
-        }
+        } finally {
+            setIsAddingProduct(false);
+        }   
     };
     
     const handleEditProduct = (product) => {
