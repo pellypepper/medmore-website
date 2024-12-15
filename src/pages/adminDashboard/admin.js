@@ -382,7 +382,7 @@ const AdminDashboard = () => {
                                 <button type="button" onClick={() => { setProductForm({ id: '', name: '', price: '', img: null }); setIsEditing(false); }}>Cancel</button>
                             )}
                         </form>
-                                     {isAddingProduct && <Spinner />}
+                         {isAddingProduct && <Spinner />}
                         <div className="products-grid">
                      
                             {products.map((product) => (

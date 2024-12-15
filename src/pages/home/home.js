@@ -114,7 +114,7 @@ export default function Home({ removeFromCart }) {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            setLoadingProducts(true);
+            setLoadingProducts(false);
             try {
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/products`);
                 if (!response.ok) throw new Error("Failed to fetch products");
