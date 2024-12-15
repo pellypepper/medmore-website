@@ -10,7 +10,7 @@ const AdminDashboard = () => {
     const [alertMessage, setAlertMessage] = useState("");
     const [products, setProducts] = useState([]);
     const [salesData, setSalesData] = useState({ sales_count: 0, total: 0, total_buyer: 0 });
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [activeMenu, setActiveMenu] = useState('Dashboard'); 
     const [productForm, setProductForm] = useState({ id: '', name: '', price: '', image: null }); // Change img to null
     const [isEditing, setIsEditing] = useState(false);
@@ -47,6 +47,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
                 const productsResponse = await fetch(`${process.env.REACT_APP_API_URL}/products`);
                 const productsData = await productsResponse.json();
 
