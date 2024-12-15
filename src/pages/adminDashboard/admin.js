@@ -201,6 +201,7 @@ const AdminDashboard = () => {
 
     const handleUpdateProduct = async (e) => {
         e.preventDefault();
+        setIsAddingProduct(true);
         const formData = new FormData();
         formData.append('name', productForm.name);
         formData.append('price', productForm.price);
@@ -245,7 +246,9 @@ const AdminDashboard = () => {
             setAlertMessage('Product Updated successfully!');
         } catch (error) {
             console.error('Error updating product:', error);
-        }
+        } finally {
+            setIsAddingProduct(false);
+        }   
     };
 
     const handleDeleteProduct = async (id) => {
