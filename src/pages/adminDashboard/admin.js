@@ -7,6 +7,7 @@ import './admin.css';
 
 const AdminDashboard = () => {
     const [orders, setOrders] = useState([]);
+    const [alertMessage, setAlertMessage] = useState("");
     const [products, setProducts] = useState([]);
     const [salesData, setSalesData] = useState({ sales_count: 0, total: 0, total_buyer: 0 });
     const [loading, setLoading] = useState(true);
@@ -14,7 +15,9 @@ const AdminDashboard = () => {
     const [productForm, setProductForm] = useState({ id: '', name: '', price: '', image: null }); // Change img to null
     const [isEditing, setIsEditing] = useState(false);
     const chartRef = useRef(null); 
+    const [fadeOut, setFadeOut] = useState(false);
     const navigate = useNavigate();
+    const [isAddingProduct, setIsAddingProduct] = useState(false); // New state for spinner
 
 
     const handleLogout = async () => {
@@ -36,7 +39,8 @@ const AdminDashboard = () => {
             navigate('/'); 
         } catch (error) {
             console.error('Logout error:', error);
-            alert('Failed to log out. Please try again.'); 
+            alert('Failed to log out. Please try again.');  
+          setAlertMessage('Failed to log out. Please try again.');
         }
     };
 
@@ -174,12 +178,13 @@ const AdminDashboard = () => {
             // Reset form
             setProductForm({ id: '', name: '', price: '', image: null });
             
-            alert('Product added successfully!');
+            setAlertMessage('Product added successfully!');
     
         } catch (error) {
             console.log(error.message);
             console.error('Complete Error:', error.response ? error.response.data : error.message);
-            alert(`Failed to add product: ${error.response ? error.response.data.error : error.message}`);
+            alert();
+            setAlertMessage(`Failed to add product: ${error.response ? error.response.data.error : error.message}`);
         }
     };
     
@@ -231,6 +236,7 @@ const AdminDashboard = () => {
     
             setProductForm({ id: '', name: '', price: '', image: null });
             setIsEditing(false);
+            setAlertMessage('Product Updated successfully!');
         } catch (error) {
             console.error('Error updating product:', error);
         }
@@ -329,7 +335,7 @@ const AdminDashboard = () => {
                                     <div className="top-product-card" key={product.id}>
                                         <h4>{product.name}</h4>
                                         <p className="product-price">Price: £{product.price}</p>
-                                        <p className="total-sales">Total Sales: £{product.totalSales}</p>
+                                        <p className="total-sales">Total Sales: {product.totalSales}</p>
                                         <div className="actions">
                                             <button className="view-button">View</button>
                                             <button className="edit-button" onClick={() => handleEditProduct(product)}>Edit</button>
@@ -376,6 +382,7 @@ const AdminDashboard = () => {
                                 <button type="button" onClick={() => { setProductForm({ id: '', name: '', price: '', img: null }); setIsEditing(false); }}>Cancel</button>
                             )}
                         </form>
+                                     {isAddingProduct && <Spinner />}
                         <div className="products-grid">
                      
                             {products.map((product) => (
@@ -429,6 +436,11 @@ const AdminDashboard = () => {
                             <p>No orders available.</p>
                         )}
                     </section>
+                )}
+                  {alertMessage && (
+                    <div className={`alert-popup ${fadeOut ? "alert-popup-exit" : ""}`}>
+                        {alertMessage}
+                    </div>
                 )}
             </main>
         </div>
