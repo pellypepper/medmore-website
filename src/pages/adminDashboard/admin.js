@@ -129,7 +129,7 @@ const AdminDashboard = () => {
     
     const handleAddProduct = async (e) => {
         e.preventDefault();
-    
+        setIsAddingProduct(true);
         // Validation
         if (!productForm.name || !productForm.price) {
             alert('Please enter product name and price');
@@ -173,7 +173,7 @@ const AdminDashboard = () => {
             // Correct way to handle axios response
             console.log('New Product Added:', response.data);
            
-            setIsAddingProduct(true);
+          
             // Update products list
             setProducts((prevProducts) => [...prevProducts, response.data]);
             
