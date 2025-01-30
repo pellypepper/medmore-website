@@ -10,7 +10,7 @@ export default function Footer() {
             <div className="footer-wrapper">
                 <div className="row p-3">
                     <div className='col-12 col-md-6'>
-                        <h3>CONTACT US</h3>
+                        <h1>CONTACT US</h1>
                         <div className='d-flex flex-row row-1 mt-4'>
                         <FaPhoneAlt size={20} color="green" />
                             <p>07398653511</p>

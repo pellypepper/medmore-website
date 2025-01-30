@@ -15,7 +15,48 @@ const Checkout = lazy(() => import('./pages/checkout/checkout'));
 const AdminDashboard = lazy(() => import('./pages/adminDashboard/admin'));
 const OrderConfirmation = lazy(() => import('./pages/order/order'));
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+// Stripe configuration with error handling
+const getStripe = () => {
+  const stripeKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY;
+  
+  if (!stripeKey) {
+    console.error('Stripe public key is not defined in environment variables');
+    return null;
+  }
+
+  try {
+    return loadStripe(stripeKey);
+  } catch (error) {
+    console.error('Error loading Stripe:', error);
+    return null;
+  }
+};
+
+const stripePromise = getStripe();
+
+// Error boundary for Stripe integration
+class StripeErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Stripe Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <div>Error loading payment system. Please try again later.</div>;
+    }
+
+    return this.props.children;
+  }
+}
 
 function App() {
   const [cart, setCart] = useState(() => {
@@ -33,12 +74,10 @@ function App() {
 
   const removeFromCart = async (product) => {
     try {
-      // Update local state first
       const newCart = cart.filter(item => item.id !== product.productId);
       setCart(newCart);
       updateSessionStorageCart(newCart);
 
-      // Make API call
       const response = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -49,40 +88,50 @@ function App() {
       });
 
       if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage || "Failed to remove item from cart");
+        throw new Error(await response.text() || "Failed to remove item from cart");
       }
 
-      // Get updated cart from server
       const serverCart = await response.json();
       setCart(serverCart);
       updateSessionStorageCart(serverCart);
 
     } catch (error) {
       console.error("Error removing item from server:", error);
-      // Revert to original cart if there's an error
       setCart(cart);
       updateSessionStorageCart(cart);
     }
   };
 
+  // Only render Elements if Stripe is properly initialized
+  const renderStripeElements = () => {
+    if (!stripePromise) {
+      return <div>Unable to load payment system. Please check your configuration.</div>;
+    }
+
+    return (
+      <Elements stripe={stripePromise}>
+        <Router>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<Home removeFromCart={removeFromCart} />} />
+              <Route path="/checkout" element={<Checkout removeFromCart={removeFromCart} />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/card" element={<Card />} />
+              <Route path="/detail" element={<Detail />} />
+              <Route path="/display" element={<ProductDisplay />} />
+              <Route path="/order" element={<OrderConfirmation />} />
+            </Routes>
+          </Suspense>
+        </Router>
+      </Elements>
+    );
+  };
+
   return (
-    <Elements stripe={stripePromise}>
-      <Router>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<Home removeFromCart={removeFromCart} />} />
-            <Route path="/checkout" element={<Checkout removeFromCart={removeFromCart} />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/card" element={<Card />} />
-            <Route path="/detail" element={<Detail />} />
-            <Route path="/display" element={<ProductDisplay />} />
-            <Route path="/order" element={<OrderConfirmation />} />
-          </Routes>
-        </Suspense>
-      </Router>
-    </Elements>
+    <StripeErrorBoundary>
+      {renderStripeElements()}
+    </StripeErrorBoundary>
   );
 }
 

@@ -207,6 +207,7 @@ export default function Home({ removeFromCart }) {
 
             <div className="whatsapp-logo">
                 <a
+                alt='whatsapp'
                     href="https://wa.me/4407398653511"
                     target="_blank"
                     rel="noopener noreferrer"
