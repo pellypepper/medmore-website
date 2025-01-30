@@ -17,7 +17,7 @@ const OrderConfirmation = lazy(() => import('./pages/order/order'));
 
 // Stripe configuration with error handling
 const getStripe = () => {
-  const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY;
+  const stripeKey = 'pk_test_51QRXGxBlRPuLLUxXv5sBy4qC8Fq0UlhZsF2B4fKZ2qjHiW9Ibf1ezKrM3cE25tPZlvGFZjDgdyBNh4D2Gp4G4QLYg00Az8G3Tzq';
   
   if (!stripeKey) {
     console.error('Stripe public key is not defined in environment variables');
