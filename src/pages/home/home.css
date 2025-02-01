@@ -3,7 +3,7 @@
 }
 
 .home-text-wrapper{
-    background-image: url(../../assets/bg.jpg);
+    background-image: url(../../../public/bg.webp);
     width: 100%;
     min-height: 350px;
 
