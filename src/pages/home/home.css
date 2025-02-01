@@ -8,7 +8,12 @@
     min-height: 350px;
 
 }
-
+.home-text img{
+    width: 50%;
+    height: 70%;
+    object-fit: cover;
+    filter: brightness(50%);
+}
 
 .home-text-wrapper .row{
   height: 100%;
