@@ -15,7 +15,7 @@ footer{
   justify-content: space-around;
 
 }
-p{
+span{
     font-size: var(--med-sm);
 }
 
@@ -26,7 +26,7 @@ p{
 .icon-wrapper{
     gap: 20px;
 }
-div h3{
+div p{
     font-size: var(--med-md);
 }
 
@@ -44,6 +44,8 @@ width:  300px;
     margin: 10px 0;
     border-radius: 5px;
     border: none;
+    resize: none;
+    height: 50px;
 }
 
 .footer-2 button{
@@ -70,31 +72,35 @@ text-align: center;
     text-align: center;
     padding: 10px;
 }
-
+.icon-wrapper svg {
+    width: 50px;
+    height: 50px;
+  }
+  
 @media screen and (max-width: 481px){
-    div h3{
+    div p{
         font-size: var(--mob-sm);
     }
-    p{
+    span{
         font-size: var(--mob-sm);
     }
     
 }
 @media screen and (max-width: 390px){
-    footer div h3{
+    footer div p{
         font-size: 12px;
     }
-    footer p{
+    footer span{
         font-size: 12px;
     }
     
 }
 
 @media screen and (min-width: 1024px){
-    div h3{
+    div p{
         font-size: var(--big-md);
     }
-    p{
+    span{
         font-size: var(--big-sm);
     }
     
