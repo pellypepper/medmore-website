@@ -48,7 +48,7 @@ export default function Home({ removeFromCart }) {
         } finally {
             setLoadingCart(false); // Stop loading
         }
-    }, []); 
+    }, []);
 
 
     const addToCart = async (product, quantity) => {
@@ -57,7 +57,7 @@ export default function Home({ removeFromCart }) {
         setCart(prevCart => {
             const existingProductIndex = prevCart.findIndex(item => item.id === product.id);
             let updatedCart;
-    
+
             if (existingProductIndex > -1) {
                 updatedCart = prevCart.map((item, index) =>
                     index === existingProductIndex
@@ -67,12 +67,12 @@ export default function Home({ removeFromCart }) {
             } else {
                 updatedCart = [...prevCart, { ...product, quantity: parsedQuantity }];
             }
-    
+
             return updatedCart; // Return new cart state
         });
-    
+
         updateSessionStorageCart(cart); // Update session storage before server update
-    
+
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
                 method: "POST",
@@ -90,17 +90,17 @@ export default function Home({ removeFromCart }) {
                     quantity: parsedQuantity,
                 }),
             });
-    
+
             if (!response.ok) {
                 throw new Error("Failed to add item to cart");
             }
-    
+
             const updatedCartFromServer = await response.json();
             if (JSON.stringify(cart) !== JSON.stringify(updatedCartFromServer)) {
                 setCart(updatedCartFromServer);
                 updateSessionStorageCart(updatedCartFromServer);
             }
-            
+
             // Refetch the cart data after adding an item
             await fetchCart();// Add this line to refetch the cart data after adding an item
             setAlertMessage(`${product.name} has been added to the cart.`);
@@ -109,7 +109,7 @@ export default function Home({ removeFromCart }) {
             // Optionally revert or handle error
         }
     };
-    
+
 
 
     useEffect(() => {
@@ -131,13 +131,13 @@ export default function Home({ removeFromCart }) {
         fetchProducts();
     }, []);
 
-  useEffect(() => {
+    useEffect(() => {
         fetchCart(); // Call fetchCart function
     }, [fetchCart]); // Add fetchCart to dependencies
 
 
 
-    
+
 
     useEffect(() => {
         if (alertMessage) {
@@ -185,10 +185,10 @@ export default function Home({ removeFromCart }) {
 
             <section>
                 {loadingProducts ? (
-                   <Spinner />
+                    <Spinner />
                 ) : (
                     <ProductSlider
-                    products={filteredProducts}
+                        products={filteredProducts}
                         addToCart={addToCart}
                         searchQuery={searchQuery}
                     />
@@ -206,15 +206,11 @@ export default function Home({ removeFromCart }) {
             </section>
 
             <div className="whatsapp-logo">
-                <a
-                alt='whatsapp'
-                    href="https://wa.me/4407398653511"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="whatsapp-button"
-                >
+
+                <a href="https://wa.me/4407398653511" target="_blank" rel="noopener noreferrer" class="whatsapp-button" aria-label="Chat with us on WhatsApp">
                     <FaWhatsapp size={40} color="#25D366" />
                 </a>
+
             </div>
         </main>
     );

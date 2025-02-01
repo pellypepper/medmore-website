@@ -29,7 +29,7 @@ export default function Footer() {
                     </div>
 
                     <div className='col-12 col-md-6 mt-5 mt-md-0 footer-2'>
-                       <h3>SIGNUP FOR DISCOUNT AND UPDATE</h3>
+                       <h1>SIGNUP FOR DISCOUNT AND UPDATE</h1>
                        <textarea placeholder="Enter your email"></textarea>
                        <button>Submit</button>
                     </div>

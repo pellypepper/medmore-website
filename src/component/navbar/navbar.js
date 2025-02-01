@@ -67,16 +67,16 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
 </Link>
                     </div>
                     <nav className="col-6 d-flex justify-content-end">
-                        <button onClick={() => toggleVisibility(searchRef)} className="rounded-pill">
+                        <button onClick={() => toggleVisibility(searchRef)} aria-label="Search Button" className="rounded-pill">
                             <FaSearch className="icon" />
                         </button>
-                        <button onClick={() => toggleVisibility(loginRef)} className="rounded-pill">
+                        <button onClick={() => toggleVisibility(loginRef)} aria-label="Profile-icon" className="rounded-pill">
                             <FaUser className="icon" />
                         </button>
-                        <button onClick={() => toggleVisibility(menuRef)} className="rounded-pill">
+                        <button onClick={() => toggleVisibility(menuRef)} aria-label="Menu-icon" className="rounded-pill">
                             <FaBars className="icon" />
                         </button>
-                        <button onClick={() => toggleVisibility(cartRef)} className="rounded-pill">
+                        <button onClick={() => toggleVisibility(cartRef)} aria-label="Shopping-cart" className="rounded-pill">
                             <FaShoppingCart className="icon" />
                         </button>
                     </nav>
