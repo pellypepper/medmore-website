@@ -10,9 +10,11 @@
 }
 .home-text img{
     width: 50%;
-    height: 70%;
+    height: 50%;
     object-fit: cover;
-    filter: brightness(50%);
+    margin-bottom: 1rem;
+
+
 }
 
 .home-text-wrapper .row{
