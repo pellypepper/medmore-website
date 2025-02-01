@@ -53,6 +53,7 @@ const ProductCard = ({ product, addToCart }) => {
         <div className=" card">
             {loading && <Spinner />}
             <img
+            loading="lazy"
                 onClick={handleProductDisplay}
                 src={product.img}
                 className="card-img rounded-0"

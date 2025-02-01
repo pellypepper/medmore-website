@@ -411,7 +411,7 @@ const AdminDashboard = () => {
                      
                             {products.map((product) => (
                                 <div key={product.id} className="product-card">
-                                    <img src={product.img} alt={product.name} />
+                                    <img loading="lazy" src={product.img} alt={product.name} />
                                     <h4>{product.name}</h4>
                                     <p>Price: £{product.price}</p>
                                     <div className="actions">

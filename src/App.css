@@ -60,3 +60,10 @@ body{
 
 
 }
+
+
+@font-face {
+  font-family: 'YourFont';
+  src: url('/fonts/yourfont.woff2') format('woff2');
+  font-display: swap;
+}

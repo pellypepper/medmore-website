@@ -11,6 +11,7 @@
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="preload" href="/fonts/yourfont.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 
     <!-- Preload optimized background image -->
     <link rel="preload" as="image" href="%PUBLIC_URL%/bg.426b23a.webp" type="image/webp">
@@ -34,6 +35,14 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script src="https://js.stripe.com/v3/" defer></script>
+    <script>
+      setTimeout(() => {
+        let script = document.createElement('script');
+        script.src = 'https://js.stripe.com/v3/';
+        document.body.appendChild(script);
+      }, 5000);
+    </script>
     
     <div id="root"></div>
 

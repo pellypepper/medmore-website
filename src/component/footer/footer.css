@@ -1,5 +1,5 @@
 footer{
-    height: max-content;
+    min-height: 150px;
     background-color: var(--background-dark-color);
 }
 
