@@ -9,8 +9,8 @@
 
 }
 .home-text img{
-    width: 50%;
-    height: 50%;
+    width: 100px;
+    height:100px;
     object-fit: cover;
     margin-bottom: 1rem;
 
