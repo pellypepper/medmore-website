@@ -172,7 +172,7 @@ export default function Home({ removeFromCart }) {
             <section className="home-text-wrapper">
                 <div className="row p-5 text-center">
                     <div className="home-text">
-                        <img  loading="lazy" alt="background logo" src="/web-app-manifest-192x192.webp" />
+                        <img   alt="background logo" src="/web-app-manifest-192x192.webp" />
                         <h1>Welcome to MedMore Store</h1>
                         <span>Where you can find the best food products</span>
                     </div>
