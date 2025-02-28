@@ -3,6 +3,26 @@
   padding: 0;
   box-sizing: border-box ;
 }
+/* 
+@font-face {
+  font-family: 'YourCustomFont';
+  src: url('/fonts/woff.woff2') format('woff2');
+  font-display: swap;
+} */
+
+
+body {
+  font-family: 'YourCustomFont', sans-serif;
+}
+
+/* Atkinson Hyperlegible Next Example */
+.atkinson-hyperlegible-next {
+  font-family: "Atkinson Hyperlegible Next", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;  /* Regular weight */
+  font-style: normal;
+}
+
 body{
   font-family: "Mirza", serif;
 
@@ -30,32 +50,32 @@ body{
   --scrollbar-track-color: #383838;
 
 
-  --xs-xs : .4rem:
-  --xs-sm : .6rem;
-  --xs-md : 8rem;
-  --xs-lg : 1rem;
-  --xs-xl : 1.2rem;
+  --xs-xs : .2rem:
+  --xs-sm : .4rem;
+  --xs-md : 6rem;
+  --xs-lg : 8rem;
+  --xs-xl : 1rem;
 
-   --mob-xs : .6rem:
-   --mob-sm : .8rem;
-   --mob-md : 1rem;
-   --mob-lg : 1.2rem;
-   --mob-xl : 1.4rem;
+   --mob-xs : .4rem:
+   --mob-sm : .6rem;
+   --mob-md : .8rem;
+   --mob-lg : 1rem;
+   --mob-xl : 1.2rem;
 
 
 
-   --med-xs : .8rem;
-   --med-sm : 1rem;
-   --med-md : 1.2rem;
-   --med-lg : 1.4rem;
-   --med-xl : 1.6rem;
+   --med-xs : .6rem;
+   --med-sm : .8rem;
+   --med-md : 1rem;
+   --med-lg : 1.2rem;
+   --med-xl : 1.4rem;
    
 
-   --big-xs : 1rem;
-   --big-sm : 1.2rem;
-    --big-md : 1.4rem;
-   --big-lg : 1.6rem;
-    --big-xl : 1.8rem;
+   --big-xs : .8rem;
+   --big-sm : 1rem;
+    --big-md : 1.2rem;
+   --big-lg : 1.4rem;
+    --big-xl : 1.6rem;
 
 
 

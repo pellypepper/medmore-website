@@ -94,8 +94,8 @@ export default function Checkout({ removeFromCart }) {
             <Navbar />
             <section className="checkout-main">
                 <div className="checkout-container">
-                    {loading && <Spinner />} {/* Use the imported Spinner component */}
-                    {/* Cart Section */}
+                    {loading && <Spinner />} 
+             
                     <div className="cart-section">
                         <h2>Your Cart</h2>
                         <div className="cart-list">

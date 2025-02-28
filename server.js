@@ -1,10 +1,6 @@
 require('dotenv').config(); // Load environment variables
 const express = require('express');
-const stream = require('stream');
-const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
-const sharp = require('sharp');
-const axios = require('axios'); 
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cors = require('cors');
@@ -12,7 +8,6 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
-const rateLimit = require('express-rate-limit');
 const pgSession = require('connect-pg-simple')(session); 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
     apiVersion: '2020-08-27',
@@ -24,7 +19,6 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
 });
 const { sendEmail } = require('./mailer'); 
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const path = require('path');
 const pool = require('./db');
 const app = express();
@@ -42,7 +36,8 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 
-// Increase URL-encoded payload limit
+
+
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 const pgPool = require('pg').Pool; 
 const sessionStore = new pgSession({
@@ -75,8 +70,8 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-      folder: 'test', // The folder in your Cloudinary account
-      allowed_formats: ['jpg', 'png', 'jpeg', 'gif'], // Allowed file formats
+      folder: 'test', 
+      allowed_formats: ['jpg', 'png', 'jpeg', 'gif'], 
     },
   });
 
@@ -207,16 +202,6 @@ app.post('/webhook', async (req, res) => {
         console.log(`🔔  Payment received!`);
         
     }
-    // const sale = {
-    //     amount: data.object.amount_total / 100, // Convert from cents
-    //     currency: data.object.currency,
-    //     email: data.object.customer_email,
-    // };
-    // try {
-    //     await pool.query('INSERT INTO "sales" (amount, currency, email) VALUES ($1, $2, $3)', [sale.amount, sale.currency, sale.email]);
-    // } catch (error) {
-    //     console.error('Error saving sale to database:', error);
-    // }
 
     res.sendStatus(200);
 });
@@ -287,7 +272,7 @@ Please process this order promptly.`;
 app.post('/create-payment-intent', async (req, res) => {
     const { amount, paymentMethodType } = req.body;
 
-    // Input validation
+
     if (!amount || typeof amount !== 'number' || amount <= 0) {
         return res.status(400).json({ error: 'Invalid amount' });
     }
@@ -297,11 +282,11 @@ app.post('/create-payment-intent', async (req, res) => {
 
     try {
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(amount * 100), // Ensure amount is an integer
-            currency: process.env.CURRENCY || 'gbp', // Use environment variable
+            amount: Math.round(amount * 100), 
+            currency: process.env.CURRENCY || 'gbp', 
             payment_method_types: [paymentMethodType],
             metadata: {
-                userId: req.user?.id || 'guest', // Add metadata
+                userId: req.user?.id || 'guest', 
                 timestamp: new Date().toISOString(),
             },
         });
@@ -314,44 +299,68 @@ app.post('/create-payment-intent', async (req, res) => {
 });
 
 
-const upload = multer({ storage: storage }); // Use memory storage for multer
+const upload = multer({ storage: storage });
 
-// Endpoint to handle image uploads
-const FormData = require('form-data'); // Ensure you have 'form-data' installed
+
 
 
 
 app.post('/products', upload.single('image'), async (req, res) => {
-   
+    console.log('Request body:', req.body);
+    console.log('Request file:', req.file);
     try {
         const { name, price } = req.body;
         if (!name || !price || !req.file) {
             return res.status(400).json({ error: 'Name, price, and image are required' });
         }
 
-        // // Resize and compress image
-        // const compressedImageBuffer = await sharp(req.file.buffer)
-        //     .resize({ width: 1280, fit: 'inside', withoutEnlargement: true })
-        //     .jpeg({ quality: 70 })
-        //     .toBuffer();
 
-        console.log('File uploaded:', req.file.originalname);
-        console.log('File size:', req.file.size);
-        console.log('File path:', req.file.path);
-        const imageUrl = req.file.path;
+        const originalImageUrl = req.file.path;
+        console.log('Original image URL:', originalImageUrl);
 
-        // Save to database
+ 
+        const optimizedImageUrl = transformCloudinaryUrl(originalImageUrl);
+        console.log('Optimized image URL:', optimizedImageUrl);
+
+ 
+        const parsedPrice = parseFloat(price);
+        if (isNaN(parsedPrice)) {
+            return res.status(400).json({ error: 'Price must be a valid number' });
+        }
+
+
         const result = await pool.query(
             'INSERT INTO "products" (img, name, price) VALUES ($1, $2, $3) RETURNING *',
-            [imageUrl, name, parseFloat(price)]
+            [optimizedImageUrl, name, parsedPrice]
         );
+
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error('Product upload error:', error.response?.data || error.message);
+        console.error('Product upload error:', error);
         res.status(500).json({ error: 'Failed to upload product', details: error.message });
     }
 });
 
+/**
+ * Transform a Cloudinary URL to include optimization parameters
+ * @param {string} url - Original Cloudinary URL
+ * @returns {string} - Transformed URL with optimization parameters
+ */
+function transformCloudinaryUrl(url) {
+    // Regular expression to match Cloudinary URL pattern
+    const regex = /https:\/\/res\.cloudinary\.com\/([^\/]+)\/image\/upload\/([^\/]+)\/(.+)/;
+    const match = url.match(regex);
+    
+    if (!match) {
+        console.warn('Could not parse Cloudinary URL, returning original URL');
+        return url;
+    }
+    
+    const [_, cloudName, uploadParams, path] = match;
+    
+
+    return `https://res.cloudinary.com/${cloudName}/image/upload/w_1280,c_limit,q_70,f_webp/${path}`;
+}
 
 
 
@@ -371,29 +380,10 @@ app.get('/products', async (req, res) => {
 
 
 
-
-
-
-
-// app.post('/products', async (req, res) => {
-//     const { name, price, img } = req.body;
-//     try {
-//         const result = await pool.query(
-//             'INSERT INTO "products" (name, price, img) VALUES ($1, $2, $3) RETURNING *',
-//             [name, price, img]
-//         );
-//         res.status(201).json(result.rows[0]);
-//     } catch (error) {
-//         console.error('Error adding product:', error);
-//         res.status(500).json({ error: 'Failed to add product' });
-//     }
-// });
-
-// Route to update a product
 app.put('/products/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { name, price } = req.body;
-    const img = req.file ? req.file.path : null; // Assuming file upload middleware
+    const img = req.file ? req.file.path : null;
 
     try {
         const result = await pool.query(
@@ -420,7 +410,7 @@ app.delete('/products/:id', async (req, res) => {
         if (result.rowCount === 0) {
             return res.status(404).json({ error: 'Product not found' });
         }
-        res.status(204).send(); // No content
+        res.status(204).send();
     } catch (error) {
         console.error('Error deleting product:', error);
         res.status(500).json({ error: 'Failed to delete product' });
@@ -428,7 +418,7 @@ app.delete('/products/:id', async (req, res) => {
 });
 
 
-// // Fetch cart items
+
 
 
 app.get('/cart/:userId', async (req, res) => {
@@ -451,7 +441,7 @@ WHERE ci.user_id = $1
 
         if (cartItems.rows.length === 0) {
             console.log(`No cart items found for user: ${userId}`);
-            return res.json([]); // Return an empty array
+            return res.json([]); y
         }
 
         const updatedCart = cartItems.rows.map(item => ({
@@ -459,11 +449,11 @@ WHERE ci.user_id = $1
             userId: item.user_id,
             productId: item.product_id,
             quantity: item.quantity,
-            productName: item.product_name || 'Unknown Product', // Handle missing data
-            price: item.price ? parseFloat(item.price) : 0.0     // Handle missing data
+            productName: item.product_name || 'Unknown Product',
+            price: item.price ? parseFloat(item.price) : 0.0    
         }));
 
-        console.log('Final updated cart structure:', updatedCart);
+
 
         return res.json(updatedCart);
     } catch (error) {
@@ -477,10 +467,10 @@ WHERE ci.user_id = $1
 app.post('/cart', async (req, res) => {
     const { userId, product, quantity } = req.body;
 
-    // Log the incoming request body
-    console.log('Request body:', req.body);
 
-    // Validate incoming data
+
+
+ 
     if (!userId || !product || !product.id || !quantity) {
         console.error('Missing fields:', { userId, product, quantity });
         return res.status(400).json({ error: 'Bad Request: Missing required fields' });
@@ -488,7 +478,7 @@ app.post('/cart', async (req, res) => {
     
 
     // Log product details
-    console.log('Product details:', product);
+
     
     try {
         // Check if the product already exists in the cart
@@ -509,7 +499,7 @@ app.post('/cart', async (req, res) => {
             const price = parseFloat(product.price);
 
             // Log the price to verify its value and type
-            console.log('Price before insertion:', price);
+     
 
             // Check for invalid price
             if (isNaN(price)) {
@@ -534,7 +524,7 @@ app.post('/cart', async (req, res) => {
         WHERE ci.user_id = $1
     `, [userId]);
 
-    console.log('Cart items after update:', cartItems.rows);
+    
 
     const updatedCart = cartItems.rows.map(item => ({
         id: item.id,
@@ -545,7 +535,7 @@ app.post('/cart', async (req, res) => {
         price: parseFloat(item.price)
     }));
 
-    console.log('Updated cart structure after addition:', updatedCart);
+
     return res.json(updatedCart);
 
     } catch (error) {
@@ -567,12 +557,12 @@ app.delete('/cart', async (req, res) => {
 
     try {
         console.log('Removing item from cart:', { userId, productId });
-        // Delete the item from the cart
+
         await pool.query('DELETE FROM "cart_items" WHERE user_id = $1 AND product_id = $2', [userId, productId]);
 
-        // Fetch the updated cart items
+
         const cartItems = await pool.query('SELECT * FROM "cart_items" WHERE user_id = $1', [userId]);
-        console.log('Cart items after deletion:', cartItems.rows);
+
 
         // Return the updated cart items
         return res.json(cartItems.rows);
@@ -608,7 +598,7 @@ app.get('/sales', async (req, res) => {
 
 app.get('/orders', async (req, res) => {
     try { 
-        console.log('Fetching all orders');
+     
         const result = await pool.query(
             `SELECT 
                 id,
@@ -625,14 +615,14 @@ app.get('/orders', async (req, res) => {
             FROM "orders"`
         );
 
-        console.log('Fetching all orders', result.rows);
+ 
   
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'No orders available' });
         }
 
-        res.json(result.rows); // Return all orders
-        console.log('Fetching all orders', result.rows);
+        res.json(result.rows);
+
     } catch (error) {
         console.error('Error fetching orders:', error);
         res.status(500).json({ error: 'Failed to fetch orders' });
@@ -644,7 +634,7 @@ app.get('/orders', async (req, res) => {
 
 
 app.post('/login', passport.authenticate("local", { failureRedirect: "/" }), (req, res) => {
-    const user = req.user; // Passport attaches the authenticated user to req
+    const user = req.user; 
     console.log("Authenticated user:", user);
     console.log("Session info:", req.session);
     res.json({
@@ -654,18 +644,16 @@ app.post('/login', passport.authenticate("local", { failureRedirect: "/" }), (re
 
 function isAdmin(req, res, next) {
     if (req.isAuthenticated() && req.user.isAdmin) {
-        return next(); // User is authenticated and is an admin
+        return next(); 
     }
-    res.status(403).json({ error: "Access denied" }); // Forbidden
+    res.status(403).json({ error: "Access denied" }); 
 }
 
 
-// Use this middleware on the admin route
+
 
 app.get("/check-auth", (req, res) => {
-    console.log('User :', req.user); // Log the user object
-    console.log('Is authenticated:', req.isAuthenticated()); // Log authentication status
-
+   
     if (req.isAuthenticated()) {
         return res.json({
             authenticated: true,
@@ -685,7 +673,7 @@ app.post('/logout', (req, res) => {
             console.error("Logout error:", err);
             return res.status(500).json({ error: "Failed to log out" });
         }
-        res.json({ message: "Logout successful" }); // Change to JSON response
+        res.json({ message: "Logout successful" }); 
     });
 });
 

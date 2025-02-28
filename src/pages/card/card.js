@@ -142,15 +142,15 @@ const Card = () => {
             const timer = setTimeout(() => {
                 setFadeOut(true); // Trigger fade out
                 const removeAlertTimer = setTimeout(() => {
-                    setAlertMessage(""); // Clear the alert after fade out
+                    setAlertMessage(""); 
                     setError("");
-                    setFadeOut(false); // Reset fade out state
-                }, 500); // Match this time with the CSS transition duration
+                    setFadeOut(false); 
+                }, 500); 
 
                 return () => clearTimeout(removeAlertTimer);
-            }, 5000); // Keep alert message visible for 5 seconds
+            }, 5000); 
 
-            return () => clearTimeout(timer); // Cleanup the timer on unmount
+            return () => clearTimeout(timer); 
         }
     }, [alertMessage, error]);
 
@@ -165,7 +165,7 @@ const Card = () => {
                     <p>Payment</p>
                 </div>
 
-                {loading && <Spinner />} {/* Show spinner when loading */}
+                {loading && <Spinner />} 
                 
                 <form className='mt-2' onSubmit={handleSubmit}>
                     <label className='label'>
@@ -179,7 +179,7 @@ const Card = () => {
                                     value='card'
                                     defaultChecked
                                 />
-                                <img src='card.jpg' alt='card' /> Card
+                                <img src='card.webp' alt='card' /> Card
                             </div>
                             <div>
                                 <input
@@ -188,7 +188,7 @@ const Card = () => {
                                     name='paymentMethod'
                                     value='apple_pay'
                                 />
-                                <img src='apple.png' alt='apple' /> Apple Pay
+                                <img src='apple.webp' alt='apple' /> Apple Pay
                             </div>
                             <div>
                                 <input
@@ -197,7 +197,7 @@ const Card = () => {
                                     name='paymentMethod'
                                     value='google_pay'
                                 />
-                                <img src='google.png' alt='google' /> Google Pay
+                                <img src='google.webp' alt='google' /> Google Pay
                             </div>
                             <div>
                                 <input

@@ -8,7 +8,7 @@
     min-height: 350px;
 
 }
-.home-text img{
+.home-text picture{
     width: 200px;
     height:200px;
     object-fit: cover;
