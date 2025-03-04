@@ -115,6 +115,7 @@ const Card = () => {
     };
 
     const sendUserDataToServer = async (userData, paymentIntentId, cart) => {
+        console.log('Sending user data to server:', userData);
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/record-payment`, {
                 method: 'POST',
