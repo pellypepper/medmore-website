@@ -1,5 +1,3 @@
-
-// webpack.config.js
 const path = require('path');
 const CompressionPlugin = require('compression-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -33,8 +31,8 @@ module.exports = {
             )[1];
             return `vendor.${packageName.replace('@', '')}`;
           },
-          priority: -10,  
-          chunks: 'all', 
+          priority: -10,
+          chunks: 'all',
         },
       },
     },
