@@ -38,9 +38,9 @@
 }
 
 .payment-option:hover {
-    background-color: var(--primary-dark-color); /* Light blue background on hover */
-    transform: translateY(-2px); /* Lift effect on hover */
-    cursor: pointer; /* Pointer cursor on hover */
+    background-color: var(--primary-dark-color);
+    transform: translateY(-2px); 
+    cursor: pointer; 
 }
 
 .payment-option label {

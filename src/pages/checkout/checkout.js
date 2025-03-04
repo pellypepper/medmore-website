@@ -4,7 +4,7 @@ import Navbar from "../../component/navbar/navbar";
 import Footer from "../../component/footer/footer";
 import Country from "../../component/search/country";
 import ShippingMethod from "../../component/shippingmethod/shippingmethod";
-import Spinner from "../../component/spinner"; // Adjust the import path accordingly
+import Spinner from "../../component/spinner";
 import "./checkout.css";
 
 export default function Checkout({ removeFromCart }) {
@@ -23,7 +23,7 @@ export default function Checkout({ removeFromCart }) {
         postcode: "", 
     });
     const [alertMessage, setAlertMessage] = useState("");
-    const [loading, setLoading] = useState(false); // Spinner state
+    const [loading, setLoading] = useState(false);
 
     const shippingFees = {
         standard: 10,
@@ -82,11 +82,11 @@ export default function Checkout({ removeFromCart }) {
         setLoading(true); // Show spinner
         const total = calculateTotal();
         
-        // Simulate a network request (e.g., sending order data)
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
+        
+        await new Promise((resolve) => setTimeout(resolve, 1000)); 
         console.log(form)
         navigate("/payment", { state: { total, cart, form } });
-        setLoading(false); // Hide spinner
+        setLoading(false); 
     };
 
     return (
@@ -187,8 +187,8 @@ export default function Checkout({ removeFromCart }) {
                                 required
                             />
                             <Country
-                                onCountrySelect={handleCountrySelect} // Pass the handler for country selection
-                                onStateSelect={handleStateSelect} // Pass the handler for state selection
+                                onCountrySelect={handleCountrySelect} 
+                                onStateSelect={handleStateSelect} 
                             />
                             <input
                                   name="postcode"

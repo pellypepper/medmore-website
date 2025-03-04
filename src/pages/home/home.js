@@ -34,19 +34,19 @@ export default function Home({ removeFromCart }) {
     };
 
     const fetchCart = useCallback(async () => {
-        const userId = getUserId(); // Retrieve the user ID
-        setLoadingCart(true); // Start loading
+        const userId = getUserId();
+        setLoadingCart(true); 
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/cart/${userId}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const cartData = await response.json();
-            setCart(cartData); // Update cart state
-            updateSessionStorageCart(cartData); // Update session storage
+            setCart(cartData); 
+            updateSessionStorageCart(cartData);
         } catch (error) {
             console.error("Error fetching cart:", error);
-            setCart([]); // Reset cart to an empty array on error
+            setCart([]);
         } finally {
-            setLoadingCart(false); // Stop loading
+            setLoadingCart(false);
         }
     }, []);
 
@@ -68,10 +68,10 @@ export default function Home({ removeFromCart }) {
                 updatedCart = [...prevCart, { ...product, quantity: parsedQuantity }];
             }
 
-            return updatedCart; // Return new cart state
+            return updatedCart;
         });
 
-        updateSessionStorageCart(cart); // Update session storage before server update
+        updateSessionStorageCart(cart); 
 
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
@@ -101,12 +101,12 @@ export default function Home({ removeFromCart }) {
                 updateSessionStorageCart(updatedCartFromServer);
             }
 
-            // Refetch the cart data after adding an item
-            await fetchCart();// Add this line to refetch the cart data after adding an item
+          
+            await fetchCart();
             setAlertMessage(`${product.name} has been added to the cart.`);
         } catch (error) {
             console.error("Error updating cart on server:", error);
-            // Optionally revert or handle error
+            
         }
     };
 
@@ -132,8 +132,8 @@ export default function Home({ removeFromCart }) {
     }, []);
 
     useEffect(() => {
-        fetchCart(); // Call fetchCart function
-    }, [fetchCart]); // Add fetchCart to dependencies
+        fetchCart(); 
+    }, [fetchCart]); 
 
 
 

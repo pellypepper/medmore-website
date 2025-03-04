@@ -9,7 +9,7 @@ export default function OrderConfirmation(){
     const navigate = useNavigate();
     const orderDetails = location.state?.order || {};
 
-     // Check if order details are available
+    
      if (!orderDetails.id) {
         return (
             <div className="error-message">
@@ -22,7 +22,7 @@ export default function OrderConfirmation(){
 
     const handleContinueShopping = () => {
         console.log(orderDetails.items)
-        navigate('/'); // Redirect to homepage
+        navigate('/'); 
     };
 
     return (

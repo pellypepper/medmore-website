@@ -12,10 +12,10 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
     const cartRef = useRef(null);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false); // Track loading state
+    const [loading, setLoading] = useState(false); 
     const navigate = useNavigate();
 
-    // Utility functions for toggling menu visibility
+
     const toggleVisibility = (ref) => ref.current?.classList.toggle("active");
     const closeVisibility = (ref) => ref.current?.classList.remove("active");
 
@@ -46,7 +46,7 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
             console.log("Login successful:", data);
 
             if (data.user?.isadmin) {
-                navigate("/admin"); // Redirect to admin page if user is admin
+                navigate("/admin"); 
             } else {
                 alert("You do not have permission to access the admin page.");
             }

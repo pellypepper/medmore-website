@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import Navbar from '../../component/navbar/navbar';
 import Footer from '../../component/footer/footer';
-import Spinner from '../../component/spinner'; // Import the spinner component
+import Spinner from '../../component/spinner'; 
 import './payment.css'; 
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Payment() {
     const [paymentMethod, setPaymentMethod] = useState('');
-    const [loading, setLoading] = useState(false); // State for loading spinner
+    const [loading, setLoading] = useState(false); 
     const navigate = useNavigate();
     const location = useLocation();
     const cart = location.state?.cart || [];
@@ -20,18 +20,18 @@ export default function Payment() {
 
     const handleClick = (e) => {
         e.preventDefault();
-        setLoading(true); // Show spinner when processing payment method
+        setLoading(true); 
 
-        // Simulate network delay for navigation (this is where you'd make an API call)
+   
         setTimeout(() => {
-            console.log(cart); // Log cart for both payment methods for easier debugging
+            console.log(cart); 
             if (paymentMethod === 'bank-transfer') {
                 navigate('/detail', { state: { total, form, cart } }); 
             } else {
                 navigate('/card', { state: { total, form, cart } });
             }
-            setLoading(false); // Hide spinner after navigation
-        }, 1000); // Simulate a delay (adjust as necessary)
+            setLoading(false); 
+        }, 1000);
     };
 
     return (
@@ -41,7 +41,7 @@ export default function Payment() {
             </section>
             <section className="payment-section">
                 <h2 className="payment-title">Choose Payment Method</h2>
-                {loading && <Spinner />} {/* Show the spinner when loading */}
+                {loading && <Spinner />} 
                 <form className="payment-options" onSubmit={handleClick}>
                     <div className="payment-option">
                         <input 

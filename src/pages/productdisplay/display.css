@@ -65,7 +65,7 @@ background-color: var(--font-light-color);
 }
 
 .product-text .quantity-controls{
-    display: flex; /* Flex for better layout */
+    display: flex; 
     align-items: center;
     justify-content: center;
     margin-top: 1rem;
@@ -84,7 +84,7 @@ background-color: var(--font-light-color);
 }
 
 .quantity-controls button:hover {
-    color: var(--primary-color); /* Change color on hover */
+    color: var(--primary-color); 
 }
 
 .reviews{
@@ -124,7 +124,7 @@ background-color: var(--font-light-color);
 
 .product-text .btn:hover {
     
-    transform: scale(1.05); /* Slightly enlarge on hover */
+    transform: scale(1.05);
 }
 
 @media  screen and (max-width: 390px) {

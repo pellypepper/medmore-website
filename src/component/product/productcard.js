@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Spinner from "../spinner"; // Adjust the path according to your project structure
+import Spinner from "../spinner";
 import "./product.css";
 
 const ProductCard = ({ product, addToCart }) => {
@@ -27,7 +27,7 @@ const ProductCard = ({ product, addToCart }) => {
          
             addToCart(product, quantity);
             setAlertMessage(`${quantity} ${product.name} added to cart.`);
-            // await new Promise((resolve) => setTimeout(resolve, 100));
+       
         } catch (error) {
             console.error('Failed to add to cart:', error);
             setAlertMessage('Failed to add product to cart.');
@@ -46,7 +46,6 @@ const ProductCard = ({ product, addToCart }) => {
 
    
 
-//  const imageUrl = product.img
 
 
     return (

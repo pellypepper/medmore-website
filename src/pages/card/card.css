@@ -3,7 +3,7 @@
     height: 100vh;
     justify-content: center;
     align-items: center;
-    background: #f9f9f9; /* Light background */
+    background: #f9f9f9;
 }
 
 .card-wrapper {
@@ -14,7 +14,7 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     background-color: #fff;
     height: max-content;
-    animation: fadeIn 0.5s ease-in-out; /* Fade-in animation */
+    animation: fadeIn 0.5s ease-in-out; 
 }
 
 @keyframes fadeIn {
@@ -38,7 +38,7 @@
 }
 
 .card-text p {
-    font-size: 1.2rem; /* Medium-large font */
+    font-size: 1.2rem; 
     font-weight: 600;
 }
 
@@ -89,15 +89,15 @@ label{
 }
 
 .card-element:focus-within {
-    border-color: #007bff; /* Blue border on focus */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle shadow */
+    border-color: #007bff; 
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 .card-row:last-of-type {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: 1rem; /* Space between expiry and CVV */
+    gap: 1rem; 
 }
 
 .full-width {
@@ -177,8 +177,8 @@ flex-wrap: wrap;
 }
 
 .success-popup-exit, .error-exit {
-    opacity: 0; /* Fade out effect */
-    transform: translateY(-20px); /* Move up slightly during fade out */
+    opacity: 0; 
+    transform: translateY(-20px);
 }
 
 @keyframes shake {
@@ -232,6 +232,6 @@ flex-wrap: wrap;
     .error , .success-popup{
         left: 5%;
         right: 5%;
-        width: auto; /* Allow for more flexible width */
+        width: auto; 
     }
 }

@@ -8,7 +8,7 @@ import { useLocation } from "react-router-dom";
 export default function Detail() {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
-    const [uploadMessage, setUploadMessage] = useState(""); // State for upload feedback
+    const [uploadMessage, setUploadMessage] = useState(""); 
     const location = useLocation();
     const total = location.state?.total || 0;
 
@@ -19,7 +19,7 @@ export default function Detail() {
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
-            if (file.size > 2 * 1024 * 1024) { // Limit to 2MB
+            if (file.size > 2 * 1024 * 1024) { 
                 setUploadMessage("File size exceeds 2MB limit.");
                 return;
             }
@@ -33,10 +33,10 @@ export default function Detail() {
             setUploadMessage("Please select a file before uploading.");
             return;
         }
-        // Implement file upload logic here
+    
         console.log("Uploading file:", selectedFile.name);
         setUploadMessage("File uploaded successfully!");
-        setSelectedFile(null); // Reset selected file after upload
+        setSelectedFile(null); 
     };
 
     return (
@@ -45,7 +45,7 @@ export default function Detail() {
             <section className="details-wrapper m-4 p-4">
                 <div className="detail-info">
                     <span>Amount to pay:</span>
-                    <h3>${total}</h3> {/* Display the calculated total amount */}
+                    <h3>${total}</h3> 
                 </div>
                 <h2>Payment Method: Bank Transfer</h2>
                 <span className="span">
@@ -82,7 +82,7 @@ export default function Detail() {
                                 <input 
                                     type="file" 
                                     onChange={handleFileUpload} 
-                                    accept="image/*" // Specify accepted file types
+                                    accept="image/*" 
                                 />
                                 <button onClick={handleUploadClick}>Upload</button>
                             </div>

@@ -17,7 +17,7 @@ const AdminDashboard = () => {
     const chartRef = useRef(null); 
     const [fadeOut, setFadeOut] = useState(false);
     const navigate = useNavigate();
-    const [isAddingProduct, setIsAddingProduct] = useState(false); // New state for spinner
+    const [isAddingProduct, setIsAddingProduct] = useState(false); 
 
 
     const handleLogout = async () => {
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
         if (file) {
             setProductForm(prevState => ({
                 ...prevState,
-                image: file // Directly set the File object
+                image: file
             }));
         }
     };
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
     const handleAddProduct = async (e) => {
         e.preventDefault();
         setIsAddingProduct(true);
-        // Validation
+      
         if (!productForm.name || !productForm.price) {
             alert('Please enter product name and price');
             return;
@@ -141,14 +141,7 @@ const AdminDashboard = () => {
             return;
         }
     
-        // const formData = new FormData();
-     
-        // formData.append('image', productForm.image);
-        // console.log('Form Data:', formData);
-        
-        // for (const [key, value] of formData.entries()) {
-        //     console.log(`${key}:`, value);
-        // }
+       
         const formData = new FormData();
         formData.append('image', productForm.image);
         formData.append('name', productForm.name);
@@ -170,7 +163,7 @@ const AdminDashboard = () => {
                 }
             );
     
-            // Correct way to handle axios response
+           
             console.log('New Product Added:', response.data);
            
           
@@ -225,14 +218,11 @@ const AdminDashboard = () => {
                 }
             );
     
-            // Error: response.ok doesn't exist on axios response
-            // Instead, check response status
             if (response.status !== 200) {
                 throw new Error('Failed to update product');
             }
     
-            // Error: response.json() doesn't exist on axios
-            // Use response.data instead
+         
             const updatedProduct = response.data;
     
             setProducts((prevProducts) =>
@@ -393,13 +383,13 @@ const AdminDashboard = () => {
                             />
 
                             <input
-                                type="file" // Change to file input
+                                type="file"
                                 name="image"
         
                                 placeholder="Product Image"
-                                accept="image/*" // Accept image files
-                                onChange={handleFileChange} // Handle file change
-                                required={!isEditing} // Make required only if not editing
+                                accept="image/*"
+                                onChange={handleFileChange} 
+                                required={!isEditing} 
                             />
                             <button type="submit">{isEditing ? 'Update Product' : 'Add Product'}</button>
                             {isEditing && (

@@ -93,8 +93,8 @@ align-items: center;
 }
 
 .alert-popup-exit {
-    opacity: 0; /* Fade out effect */
-    transform: translateY(-20px); /* Move up slightly during fade out */
+    opacity: 0;
+    transform: translateY(-20px); 
 }
 
 @media screen and (max-width: 390px){

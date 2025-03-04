@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ProductCard from "./productcard"; // Ensure the correct case is used
-import Spinner from "../spinner"; // Ensure the correct case is used
+import ProductCard from "./productcard"; 
+import Spinner from "../spinner";
 import "./product.css";
 
 const ProductSlider = ({ addToCart, searchQuery }) => {
@@ -60,7 +60,7 @@ const ProductSlider = ({ addToCart, searchQuery }) => {
                         <div className="navigation-buttons">
                             <button
                                 onClick={() => setCurrentIndex((prev) => Math.max(0, prev - itemsPerPage))}
-                                disabled={currentIndex === 0} // Disable if at the first page
+                                disabled={currentIndex === 0} 
                             >
                                 Previous
                             </button>

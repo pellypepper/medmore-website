@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import "./country.css";
-import { countryStateData } from "./countryStateData"; // Ensure this is your correct import path
+import { countryStateData } from "./countryStateData";
 
 export default function Country({ onCountrySelect, onStateSelect }) {
     const [search, setSearch] = useState("");
@@ -11,7 +11,7 @@ export default function Country({ onCountrySelect, onStateSelect }) {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [stateDropdownVisible, setStateDropdownVisible] = useState(false);
 
-    // Handle search in country dropdown
+
     const handleSearch = (e) => {
         const value = e.target.value.toLowerCase();
         setSearch(value);
@@ -22,33 +22,31 @@ export default function Country({ onCountrySelect, onStateSelect }) {
         );
     };
 
-    // Toggle dropdown visibility
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
 
-    // Handle country selection
+
     const handleCountrySelect = (country) => {
         setSearch(country);
         setStates(countryStateData[country] || []);
         setSelectedState("");
         setDropdownVisible(false);
-        setStateDropdownVisible(false); // Reset state dropdown visibility
+        setStateDropdownVisible(false); 
 
-        // Call the provided function to update the parent component's state
         onCountrySelect(country);
     };
 
-    // Handle state selection
+
     const handleStateSelect = (state) => {
         setSelectedState(state);
         setStateDropdownVisible(false);
 
-        // Call the provided function to update the parent component's state
+     
         onStateSelect(state);
     };
 
-    // Toggle state dropdown visibility
+
     const toggleStateDropdown = () => {
         setStateDropdownVisible(!stateDropdownVisible);
     };

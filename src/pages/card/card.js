@@ -4,15 +4,15 @@ import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcEl
 import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import Spinner from '../../component/spinner'; // Import the spinner component
+import Spinner from '../../component/spinner';
 
 const Card = () => {
     const [loading, setLoading] = useState(false);
     const stripe = useStripe();
     const elements = useElements();
     const [error, setError] = useState(null);
-    const [paymentMethodType, setPaymentMethodType] = useState('card'); // Default to card payment
-    const [alertMessage, setAlertMessage] = useState(""); // State for alert message
+    const [paymentMethodType, setPaymentMethodType] = useState('card'); 
+    const [alertMessage, setAlertMessage] = useState(""); 
     const location = useLocation();
     const total = location.state?.total || 0;
     const form = location.state?.form || {};
@@ -87,6 +87,7 @@ const Card = () => {
                 console.log('Payment successful:', confirmResult.paymentIntent);
                 console.log('Payment intent ID:', confirmResult.paymentIntent.id);
                 console.log(cart);
+                console.log(form);
                 await sendUserDataToServer(form, confirmResult.paymentIntent.id, cart);
                 navigate('/order', {
                     state: {
@@ -142,7 +143,7 @@ const Card = () => {
     useEffect(() => {
         if (alertMessage || error) {
             const timer = setTimeout(() => {
-                setFadeOut(true); // Trigger fade out
+                setFadeOut(true); 
                 const removeAlertTimer = setTimeout(() => {
                     setAlertMessage(""); 
                     setError("");

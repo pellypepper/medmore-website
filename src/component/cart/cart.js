@@ -23,7 +23,7 @@ export default function Cart({ removeFromCart, cartRef }) {
     };
 
     const handleCheckout = () => {
-        // Directly navigate to checkout without a loading state
+       
         navigate("/checkout", { state: { cart } });
     };
 

@@ -13,14 +13,14 @@ export default function ProductDisplay() {
     const product = location.state?.product || {};
     const navigate = useNavigate();
 
-    // Randomly generate a rating for demonstration purposes
+   
     const rating = Math.floor(Math.random() * 5) + 1;
     const stars = Array.from({ length: 5 }, (v, i) => (i < rating ? solidStar : regularStar));
 
-    // Initialize cart state from localStorage
+   
     const loadCart = () => JSON.parse(localStorage.getItem("cart")) || [];
     const [cart, setCart] = useState(loadCart());
-    const [loading, setLoading] = useState(false); // State for loading spinner
+    const [loading, setLoading] = useState(false); 
 
     const updateCart = (newCart) => {
         setCart(newCart);
@@ -34,9 +34,9 @@ export default function ProductDisplay() {
         updateCart(updatedCart);
     };
 
-    // Navigate to checkout page
+
     const handleCheckout = async () => {
-        setLoading(true); // Show spinner when processing checkout
+        setLoading(true); 
         const existingProduct = cart.find(item => item.name === product.name);
         const updatedCart = existingProduct
             ? cart.map(item =>
@@ -48,9 +48,9 @@ export default function ProductDisplay() {
 
         updateCart(updatedCart);
 
-        // Simulate a network delay before navigating to checkout
+    
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
-        setLoading(false); // Hide spinner after processing
+        setLoading(false); 
 
         navigate("/checkout");
     };
@@ -59,7 +59,7 @@ export default function ProductDisplay() {
         <main>
             <Navbar />
             <section className="product-section my-4 container">
-                {loading && <Spinner />} {/* Show spinner when loading */}
+                {loading && <Spinner />} 
                 <div className="product-wrapper p-4">
                     <div className="product-image">
                         <img src={product.img} alt={product.name} />
