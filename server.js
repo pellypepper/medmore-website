@@ -223,7 +223,7 @@ app.post('/record-payment', async (req, res) => {
     const orderId = Math.random().toString(36).substr(2, 9);
     const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
     const address = `${userData.address} ${userData.country} ${userData.state} ${userData.postcode}`;
-
+ console.log('Recording payment:', { userData, cart, totalAmount, address, orderId, paymentIntentId });
     try {
         try {
             await pool.query('INSERT INTO "sales" (amount, currency, email) VALUES ($1, $2, $3)', [totalAmount, "GBP", userData.email]);
