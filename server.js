@@ -441,7 +441,7 @@ WHERE ci.user_id = $1
 
         if (cartItems.rows.length === 0) {
             console.log(`No cart items found for user: ${userId}`);
-            return res.json([]); y
+            return res.json([]); 
         }
 
         const updatedCart = cartItems.rows.map(item => ({
@@ -477,7 +477,7 @@ app.post('/cart', async (req, res) => {
     }
     
 
-    // Log product details
+  
 
     
     try {
@@ -498,7 +498,7 @@ app.post('/cart', async (req, res) => {
             // Convert price to a number
             const price = parseFloat(product.price);
 
-            // Log the price to verify its value and type
+
      
 
             // Check for invalid price
@@ -507,10 +507,10 @@ app.post('/cart', async (req, res) => {
                 return res.status(400).json({ error: 'Bad Request: Invalid price value' });
             }
 
-            // Insert new item into the cart
+
             await pool.query(
                 'INSERT INTO "cart_items" (user_id, product_id, quantity) VALUES ($1, $2, $3)',
-                [userId, product.id, quantity] // Ensure correct order
+                [userId, product.id, quantity] 
             );
             console.log('Inserted new item:', { userId, productId: product.id, quantity, price });
         }
