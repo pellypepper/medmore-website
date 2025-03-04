@@ -1,9 +1,11 @@
+
 // webpack.config.js
 const path = require('path');
 const CompressionPlugin = require('compression-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const BrotliPlugin = require('brotli-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -31,6 +33,8 @@ module.exports = {
             )[1];
             return `vendor.${packageName.replace('@', '')}`;
           },
+          priority: -10,  
+          chunks: 'all', 
         },
       },
     },
@@ -39,9 +43,20 @@ module.exports = {
     new CompressionPlugin({
       test: /\.(js|css|html|svg)$/,
       algorithm: 'gzip',
+      threshold: 8192,
+      minRatio: 0.8,
     }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
+    }),
+    new BrotliPlugin({
+      asset: '[path].br[query]',
+      test: /\.(js|css|html|svg)$/,
+      compressionOptions: {
+        level: 11,
+      },
+      threshold: 8192,
+      minRatio: 0.8,
     }),
   ],
   module: {
