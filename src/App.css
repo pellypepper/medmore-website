@@ -50,34 +50,30 @@ body{
   --scrollbar-track-color: #383838;
 
 
-  --xs-xs : .2rem:
-  --xs-sm : .4rem;
-  --xs-md : 6rem;
-  --xs-lg : 8rem;
-  --xs-xl : 1rem;
-
-   --mob-xs : .4rem:
-   --mob-sm : .6rem;
-   --mob-md : .8rem;
-   --mob-lg : 1rem;
-   --mob-xl : 1.2rem;
-
-
-
-   --med-xs : .6rem;
-   --med-sm : .8rem;
-   --med-md : 1rem;
-   --med-lg : 1.2rem;
-   --med-xl : 1.4rem;
-   
-
-   --big-xs : .8rem;
-   --big-sm : 1rem;
-    --big-md : 1.2rem;
-   --big-lg : 1.4rem;
-    --big-xl : 1.6rem;
-
-
+  --xs-xs : 3.2px;
+  --xs-sm : 6.4px;
+  --xs-md : 96px;
+  --xs-lg : 128px;
+  --xs-xl : 16px;
+  
+  --mob-xs : 6.4px;
+  --mob-sm : 9.6px;
+  --mob-md : 12.8px;
+  --mob-lg : 16px;
+  --mob-xl : 19.2px;
+  
+  --med-xs : 9.6px;
+  --med-sm : 12.8px;
+  --med-md : 16px;
+  --med-lg : 19.2px;
+  --med-xl : 22.4px;
+  
+  --big-xs : 12.8px;
+  --big-sm : 16px;
+  --big-md : 19.2px;
+  --big-lg : 22.4px;
+  --big-xl : 25.6px;
+  
 
 }
 
