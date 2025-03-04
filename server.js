@@ -25,7 +25,7 @@ const app = express();
 const PORT = 10000;
 
 app.use(cors({
-    origin: process.env.REACT_APP_API_URL, // Can be an array or string
+    origin: process.env.REACT_APP_API_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
         'Content-Type', 
