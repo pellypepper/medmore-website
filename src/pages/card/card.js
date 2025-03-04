@@ -121,7 +121,8 @@ const Card = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...userData, paymentIntentId, cart }),
             });
-
+            console.log('User data:', userData);
+            console.log('response', response)
             if (!response.ok) {
                 throw new Error(`Failed to record payment: ${response.statusText}`);
             }
