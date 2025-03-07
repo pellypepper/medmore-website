@@ -59,7 +59,7 @@ router.post('/webhook', async (req, res) => {
   let data;
   let eventType;
 
-  if (process.env.STRIPE_WEBHOOK_SECRET) {
+  if (process.env.REACT_APP_STRIPE_WEBHOOK_SECRET) {
     let event;
     let signature = req.headers['stripe-signature'];
 
@@ -67,7 +67,7 @@ router.post('/webhook', async (req, res) => {
       event = stripe.webhooks.constructEvent(
         req.rawBody,
         signature,
-        process.env.STRIPE_WEBHOOK_SECRET
+        process.env.REACT_APP_STRIPE_WEBHOOK_SECRET
       );
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed.`);
@@ -91,7 +91,7 @@ router.post('/webhook', async (req, res) => {
 router.get('/config', async (req, res) => {
   const price = await stripe.prices.retrieve(process.env.PRICE);
   res.send({
-    publicKey: process.env.STRIPE_PUBLISHABLE_KEY,
+    publicKey: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY,
     unitAmount: price.unit_amount,
     currency: price.currency,
   });
