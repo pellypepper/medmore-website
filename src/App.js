@@ -4,7 +4,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import stripeKey from './stripeKey';
 // Lazy load components
 const Home = lazy(() => import('./pages/home/home'));
 const Payment = lazy(() => import('./pages/payment/payment'));
@@ -17,13 +17,7 @@ const OrderConfirmation = lazy(() => import('./pages/order/order'));
 
 // Stripe configuration with error handling
 const getStripe = () => {
-  const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY;
-  
-  if (!stripeKey) {
-    console.error('Stripe API key is missing. Please check your .env file.');
-    return null;
-  }
- 
+
 
   try {
     return loadStripe(stripeKey);
