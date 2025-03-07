@@ -17,7 +17,8 @@ const OrderConfirmation = lazy(() => import('./pages/order/order'));
 
 // Stripe configuration with error handling
 const getStripe = () => {
-  const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY;
+  const stripeKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
+
   
  
 
