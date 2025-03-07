@@ -22,7 +22,7 @@ const AdminDashboard = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/logout`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/logout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -51,10 +51,10 @@ const AdminDashboard = () => {
                 const productsResponse = await fetch(`${process.env.REACT_APP_API_URL}/products`);
                 const productsData = await productsResponse.json();
 
-                const salesResponse = await fetch(`${process.env.REACT_APP_API_URL}/sales`);
+                const salesResponse = await fetch(`${process.env.REACT_APP_API_URL}/admin/sales`);
                 const salesData = await salesResponse.json();
 
-                const ordersResponse = await fetch(`${process.env.REACT_APP_API_URL}/orders`);
+                const ordersResponse = await fetch(`${process.env.REACT_APP_API_URL}/admin/orders`);
                 const ordersData = await ordersResponse.json();
               
 

@@ -66,7 +66,7 @@ export default function ProductDisplay() {
                     </div>
                     <div className="product-text mt-4 mt-md-0">
                         <h1>{product.name}</h1>
-                        <span>${typeof product.price === 'number' ? product.price : 'Price Unavailable'}</span>
+                        <span>${product.price}</span>
                         <div className="rating">
                             {stars.map((star, index) => (
                                 <FontAwesomeIcon key={index} icon={star} className="star" />

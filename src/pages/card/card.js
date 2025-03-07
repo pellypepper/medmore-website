@@ -36,7 +36,7 @@ const Card = () => {
 
         try {
 
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/create-payment-intent`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/payment/create-payment-intent`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ amount: total, paymentMethodType }),
@@ -112,7 +112,7 @@ const Card = () => {
     const sendUserDataToServer = async (userData, paymentIntentId, cart) => {
     
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/record-payment`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/payment/record-payment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...userData, paymentIntentId, cart }),
