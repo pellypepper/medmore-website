@@ -4,17 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY;
-  
-  if (!stripeKey) {
-    console.error('Stripe API key is missing. Please check your .env file.');
-  }
-  export default stripeKey;
- 
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-  <App  />
+    <App />
   </React.StrictMode>
 );
 
