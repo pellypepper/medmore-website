@@ -126,6 +126,7 @@ const Card = () => {
             }
 
             const result = await response.json();
+            console.log('Payment record result:', result);
             if (!result.success) {
                 throw new Error('Payment was not recorded successfully.');
             }
