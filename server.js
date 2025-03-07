@@ -306,8 +306,7 @@ const upload = multer({ storage: storage });
 
 
 app.post('/products', upload.single('image'), async (req, res) => {
-    console.log('Request body:', req.body);
-    console.log('Request file:', req.file);
+   
     try {
         const { name, price } = req.body;
         if (!name || !price || !req.file) {
@@ -316,11 +315,11 @@ app.post('/products', upload.single('image'), async (req, res) => {
 
 
         const originalImageUrl = req.file.path;
-        console.log('Original image URL:', originalImageUrl);
+
 
  
         const optimizedImageUrl = transformCloudinaryUrl(originalImageUrl);
-        console.log('Optimized image URL:', optimizedImageUrl);
+     
 
  
         const parsedPrice = parseFloat(price);

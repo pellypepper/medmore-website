@@ -19,6 +19,10 @@ const OrderConfirmation = lazy(() => import('./pages/order/order'));
 const getStripe = () => {
   const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY;
   
+  if (!stripeKey) {
+    console.error('Stripe API key is missing. Please check your .env file.');
+    return null;
+  }
  
 
   try {

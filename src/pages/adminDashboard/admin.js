@@ -56,7 +56,7 @@ const AdminDashboard = () => {
 
                 const ordersResponse = await fetch(`${process.env.REACT_APP_API_URL}/orders`);
                 const ordersData = await ordersResponse.json();
-                console.log('Fetched orders:', ordersData);
+              
 
                 setProducts(productsData);
                 setSalesData(salesData);
@@ -117,7 +117,7 @@ const AdminDashboard = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        console.log('Selected File:', file);
+
         
         if (file) {
             setProductForm(prevState => ({
@@ -164,7 +164,7 @@ const AdminDashboard = () => {
             );
     
            
-            console.log('New Product Added:', response.data);
+     
            
           
             // Update products list
@@ -178,9 +178,7 @@ const AdminDashboard = () => {
          
     
         } catch (error) {
-            console.log(error.message);
-            console.error('Complete Error:', error.response ? error.response.data : error.message);
-            alert();
+               alert();
             setAlertMessage(`Failed to add product: ${error.response ? error.response.data.error : error.message}`);
         } finally {
             setIsAddingProduct(false);
@@ -201,7 +199,7 @@ const AdminDashboard = () => {
         if (productForm.image) {
             formData.append('image', productForm.image);
         }
-        console.log('Form Data:', formData);
+
         
         for (const [key, value] of formData.entries()) {
             console.log(`${key}:`, value);
