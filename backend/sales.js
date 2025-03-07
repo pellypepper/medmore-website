@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
-const { isAdmin } = require('../middleware/passport-config');
+const { isAdmin } = require('./passport');
 
 // Get total sales data
 router.get('/sales', isAdmin, async (req, res) => {

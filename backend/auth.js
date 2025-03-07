@@ -3,7 +3,7 @@
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
-const { isAdmin } = require('../passport');
+const { isAdmin } = require('./passport');
 const path = require('path');
 
 

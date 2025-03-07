@@ -6,7 +6,7 @@ const pool = require('../db');
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
-const { isAdmin } = require('../passport');
+const { isAdmin } = require('./passport');
 
 // Configure Cloudinary
 cloudinary.config({

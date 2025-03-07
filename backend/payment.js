@@ -10,7 +10,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
   }
 });
 const pool = require('../db');
-const { sendEmail } = require('../util/mailer');
+const { sendEmail } = require('../mailer');
 
 // Stripe webhook setup middleware
 router.use(
