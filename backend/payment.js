@@ -59,7 +59,7 @@ router.post('/webhook', async (req, res) => {
   let data;
   let eventType;
 
-  if (process.env.REACT_APP_STRIPE_WEBHOOK_SECRET) {
+  if (process.env.STRIPE_WEBHOOK_SECRET) {
     let event;
     let signature = req.headers['stripe-signature'];
 
@@ -67,7 +67,7 @@ router.post('/webhook', async (req, res) => {
       event = stripe.webhooks.constructEvent(
         req.rawBody,
         signature,
-        process.env.REACT_APP_STRIPE_WEBHOOK_SECRET
+        process.env.STRIPE_WEBHOOK_SECRET
       );
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed.`);
@@ -163,28 +163,29 @@ Please process this order promptly.`;
 router.post('/create-payment-intent', async (req, res) => {
   const { amount, paymentMethodType } = req.body;
 
+
   if (!amount || typeof amount !== 'number' || amount <= 0) {
-    return res.status(400).json({ error: 'Invalid amount' });
+      return res.status(400).json({ error: 'Invalid amount' });
   }
   if (!paymentMethodType || typeof paymentMethodType !== 'string') {
-    return res.status(400).json({ error: 'Invalid payment method type' });
+      return res.status(400).json({ error: 'Invalid payment method type' });
   }
 
   try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100),
-      currency: process.env.CURRENCY || 'gbp',
-      payment_method_types: [paymentMethodType],
-      metadata: {
-        userId: req.user?.id || 'guest',
-        timestamp: new Date().toISOString(),
-      },
-    });
+      const paymentIntent = await stripe.paymentIntents.create({
+          amount: Math.round(amount * 100), 
+          currency: process.env.CURRENCY || 'gbp', 
+          payment_method_types: [paymentMethodType],
+          metadata: {
+              userId: req.user?.id || 'guest', 
+              timestamp: new Date().toISOString(),
+          },
+      });
 
-    res.json({ clientSecret: paymentIntent.client_secret });
+      res.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
-    console.error('Error creating payment intent:', error);
-    res.status(500).json({ error: error.message });
+      console.error('Error creating payment intent:', error);
+      res.status(500).json({ error: error.message });
   }
 });
 
