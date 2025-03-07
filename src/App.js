@@ -4,7 +4,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import stripeKey from './stripeKey';
+import stripeKey from './index';
 // Lazy load components
 const Home = lazy(() => import('./pages/home/home'));
 const Payment = lazy(() => import('./pages/payment/payment'));
