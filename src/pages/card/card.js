@@ -47,6 +47,7 @@ const Card = () => {
             }
 
             const { clientSecret } = await response.json();
+            console.log(clientSecret);
             if (!clientSecret) {
                 throw new Error('Client secret is missing in the response.');
             }
