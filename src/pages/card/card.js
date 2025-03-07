@@ -29,13 +29,13 @@ const Card = () => {
         setAlertMessage("");
 
         if (!stripe || !elements) {
-            console.error('Stripe has not been initialized.');
+      
             setLoading(false);
             return;
         }
 
         try {
-            console.log('Creating payment intent...');
+
             const response = await fetch(`${process.env.REACT_APP_API_URL}/create-payment-intent`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -51,7 +51,7 @@ const Card = () => {
                 throw new Error('Client secret is missing in the response.');
             }
 
-            console.log('Client secret received:', clientSecret);
+
 
             let confirmResult;
 
@@ -60,7 +60,7 @@ const Card = () => {
                 const cardExpiryElement = elements.getElement(CardExpiryElement);
                 const cardCvcElement = elements.getElement(CardCvcElement);
 
-                // Check if all elements are available
+
                 if (!cardNumberElement || !cardExpiryElement || !cardCvcElement) {
                     setError('Card elements are not available.');
                     setLoading(false);
@@ -73,21 +73,16 @@ const Card = () => {
                     },
                 });
             } else if (['apple_pay', 'google_pay', 'klarna'].includes(paymentMethodType)) {
-                // Placeholder for handling other payment methods
-                console.log(`Payment method type '${paymentMethodType}' selected, but not implemented.`);
-                setError(`Payment method '${paymentMethodType}' is not yet supported.`);
+              setError(`Payment method '${paymentMethodType}' is not yet supported.`);
                 setLoading(false);
                 return;
             }
 
             if (confirmResult && confirmResult.error) {
-                console.error('Payment failed:', confirmResult.error.message);
+
                 setError(confirmResult.error.message);
             } else if (confirmResult && confirmResult.paymentIntent) {
-                console.log('Payment successful:', confirmResult.paymentIntent);
-                console.log('Payment intent ID:', confirmResult.paymentIntent.id);
-                console.log(cart);
-                console.log(form);
+             
                 await sendUserDataToServer(form, confirmResult.paymentIntent.id, cart);
                 navigate('/order', {
                     state: {
@@ -104,11 +99,10 @@ const Card = () => {
                 });
             
             } else {
-                console.error('Unexpected payment confirmation result:', confirmResult);
-                setError('An unexpected error occurred during payment confirmation.');
+                      setError('An unexpected error occurred during payment confirmation.');
             }
         } catch (err) {
-            console.error('Error in payment flow:', err.message);
+
             setError(err.message);
         } finally {
             setLoading(false); // Ensure loading state is turned off
@@ -116,22 +110,22 @@ const Card = () => {
     };
 
     const sendUserDataToServer = async (userData, paymentIntentId, cart) => {
-        console.log('Sending user data to server:', userData);
+    
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/record-payment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...userData, paymentIntentId, cart }),
             });
-            console.log('User data:', userData);
-            console.log('response', response)
+    
             if (!response.ok) {
                 throw new Error(`Failed to record payment: ${response.statusText}`);
             }
 
             const result = await response.json();
-            console.log('User data recorded successfully:', result);
-            // Optionally navigate to a success page or show a confirmation message
+            if (!result.success) {
+                throw new Error('Payment was not recorded successfully.');
+            }
             setAlertMessage(` "Payment recorded successfully!" `);
         } catch (error) {
             console.error('Error recording payment:', error);

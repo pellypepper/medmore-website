@@ -3,7 +3,7 @@ import React from "react";
 import "./cart.css";
 
 export default function CartItem({ product, index, onIncrease, onDecrease, onRemove }) {
-    console.log("CartItem.js: product:", product.name);
+
     return (
         <div key={index} className="cart-item">
             <div className="cart-item-details">

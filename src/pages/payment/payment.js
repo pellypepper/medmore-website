@@ -24,7 +24,7 @@ export default function Payment() {
 
    
         setTimeout(() => {
-            console.log(cart); 
+
             if (paymentMethod === 'bank-transfer') {
                 navigate('/detail', { state: { total, form, cart } }); 
             } else {

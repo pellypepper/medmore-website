@@ -34,7 +34,7 @@ export default function Detail() {
             return;
         }
     
-        console.log("Uploading file:", selectedFile.name);
+        
         setUploadMessage("File uploaded successfully!");
         setSelectedFile(null); 
     };

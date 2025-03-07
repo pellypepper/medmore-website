@@ -79,12 +79,12 @@ export default function Checkout({ removeFromCart }) {
     // Handle form submission
     const handleOrderSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); // Show spinner
+        setLoading(true);
         const total = calculateTotal();
         
         
         await new Promise((resolve) => setTimeout(resolve, 1000)); 
-        console.log(form)
+      
         navigate("/payment", { state: { total, cart, form } });
         setLoading(false); 
     };

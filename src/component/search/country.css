@@ -1,7 +1,8 @@
 .dropdown-wrapper {
     position: relative;
     width: 100%;
- 
+    background-color: inherit;
+    color: var(--font-light-color);
     margin: 0 auto;
 }
 
