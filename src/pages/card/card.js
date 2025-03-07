@@ -23,7 +23,7 @@ const Card = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (loading) return; // Prevent double clicks
+        if (loading) return; 
         setLoading(true);
         setError(null);
         setAlertMessage("");
@@ -46,8 +46,9 @@ const Card = () => {
                 throw new Error(`Failed to create payment intent: ${response.statusText}`);
             }
 
-            const { clientSecret } = await response.json();
-            console.log(clientSecret);
+            const { clientSecret, paymentIntentId }  = await response.json();
+            console.log('Payment Intent ID:', paymentIntentId); // Log the payment intent ID
+            console.log('Client Secret:', clientSecret);
             if (!clientSecret) {
                 throw new Error('Client secret is missing in the response.');
             }

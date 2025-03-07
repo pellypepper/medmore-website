@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
+const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
   appInfo: {
     name: "stripe-samples/checkout-one-time-payments",
@@ -182,7 +182,10 @@ router.post('/create-payment-intent', async (req, res) => {
           },
       });
 
-      res.json({ clientSecret: paymentIntent.client_secret });
+      res.json({
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+    });
   } catch (error) {
       console.error('Error creating payment intent:', error);
       res.status(500).json({ error: error.message });
