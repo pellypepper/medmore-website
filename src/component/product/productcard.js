@@ -51,17 +51,20 @@ const ProductCard = ({ product, addToCart }) => {
     return (
         <div className=" card">
             {loading && <Spinner />}
-            <img
-            loading="lazy"
-                onClick={handleProductDisplay}
-                src={product.img}
-                className="card-img rounded-0"
-                alt={product.name}
-                role="button"
-                aria-label={`View details of ${product.name}`}
-    
-               
-            />
+            <picture>
+  <source srcSet={`https://res.cloudinary.com/dlgisxslb/image/upload/w_480,q_70,f_webp/${product.img}`} media="(max-width: 480px)" />
+  <source srcSet={`https://res.cloudinary.com/dlgisxslb/image/upload/w_800,q_70,f_webp/${product.img}`} media="(max-width: 800px)" />
+  <img
+    loading="lazy"
+    onClick={handleProductDisplay}
+    src={product.img}
+    className="card-img rounded-0"
+    alt={product.name}
+    role="button"
+    aria-label={`View details of ${product.name}`}
+  />
+</picture>
+
             <div className="card-body">
                 <p className="card-title">{product.name}</p>
                 <p>£{product.price}</p>
