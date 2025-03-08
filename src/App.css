@@ -50,14 +50,14 @@ body{
   --scrollbar-track-color: #383838;
 
 
-  --xs-xs : 3.2px;
-  --xs-sm : 6.4px;
-  --xs-md : 96px;
-  --xs-lg : 128px;
+  --xs-xs : 12.2px;
+  --xs-sm : 12.4px;
+  --xs-md : 12.6px;
+  --xs-lg : 13px;
   --xs-xl : 16px;
   
-  --mob-xs : 6.4px;
-  --mob-sm : 9.6px;
+  --mob-xs : 12.4px;
+  --mob-sm : 12.6px;
   --mob-md : 12.8px;
   --mob-lg : 16px;
   --mob-xl : 19.2px;
