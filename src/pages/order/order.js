@@ -21,7 +21,7 @@ export default function OrderConfirmation(){
     }
 
     const handleContinueShopping = () => {
-        console.log(orderDetails.items)
+
         navigate('/'); 
     };
 

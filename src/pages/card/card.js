@@ -47,8 +47,7 @@ const Card = () => {
             }
 
             const { clientSecret, paymentIntentId }  = await response.json();
-            console.log('Payment Intent ID:', paymentIntentId); // Log the payment intent ID
-            console.log('Client Secret:', clientSecret);
+           
             if (!clientSecret) {
                 throw new Error('Client secret is missing in the response.');
             }
@@ -74,7 +73,7 @@ const Card = () => {
                         card: cardNumberElement,
                     },
                 });
-                console.log(confirmResult);
+            
             } else if (['apple_pay', 'google_pay', 'klarna'].includes(paymentMethodType)) {
               setError(`Payment method '${paymentMethodType}' is not yet supported.`);
                 setLoading(false);
@@ -85,7 +84,7 @@ const Card = () => {
 
                 setError(confirmResult.error.message);
             } else if (confirmResult && confirmResult.paymentIntent) {
-                  console.log(confirmResult.paymentIntent.id);
+                 
                 await sendUserDataToServer(form, confirmResult.paymentIntent.id, cart);
                 navigate('/order', {
                     state: {
@@ -126,10 +125,7 @@ const Card = () => {
             }
 
             const result = await response.json();
-            console.log('Payment record result:', result);
-            if (!result.success) {
-                throw new Error('Payment was not recorded successfully.');
-            }
+            
             setAlertMessage(` "Payment recorded successfully!" `);
         } catch (error) {
             console.error('Error recording payment:', error);
