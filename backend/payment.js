@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET_KEY, {
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
   appInfo: {
     name: "stripe-samples/checkout-one-time-payments",
