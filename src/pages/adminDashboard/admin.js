@@ -65,7 +65,7 @@ const AdminDashboard = () => {
                 // Fetch admin sales data with credentials
                 try {
                     const salesResponse = await fetch(`${process.env.REACT_APP_API_URL}/admin/sales`, {
-                        credentials: 'include' // Include credentials for authentication
+                        credentials: 'include' 
                     });
                     
                     if (salesResponse.ok) {
@@ -80,10 +80,10 @@ const AdminDashboard = () => {
                     setSalesData({ sales_count: 0, total: 0, total_buyer: 0 });
                 }
                 
-                // Fetch admin orders with credentials
+              
                 try {
                     const ordersResponse = await fetch(`${process.env.REACT_APP_API_URL}/admin/orders`, {
-                        credentials: 'include' // Include credentials for authentication
+                        credentials: 'include' 
                     });
                     
                     if (ordersResponse.ok) {

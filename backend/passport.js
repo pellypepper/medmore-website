@@ -38,17 +38,20 @@ const configurePassport = (passport) => {
   // Deserialize User (Retrieve user from session)
   passport.deserializeUser(async (id, done) => {
     try {
+      console.log('Deserializing user with ID:', id);
       const result = await pool.query('SELECT * FROM "users" WHERE id = $1', [id]);
+      console.log('User found:', result.rows[0]);
       done(null, result.rows[0]);
     } catch (err) {
-      done(err);
+      console.error('Error deserializing user:', err);
+      done(err, null);
     }
   });
 };
 
 // Middleware to check if user is admin
 const isAdmin = (req, res, next) => {
-  if (req.isAuthenticated() && req.user.isAdmin) {
+  if (req.isAuthenticated() && req.user.isadmin) {
     return next();
   }
   res.status(403).json({ error: "Access denied" });
