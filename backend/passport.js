@@ -30,12 +30,12 @@ const configurePassport = (passport) => {
     )
   );
 
-  // Serialize User (Store user ID in session)
+
   passport.serializeUser((user, done) => {
     done(null, user.id);
   });
     
-  // Deserialize User (Retrieve user from session)
+
   passport.deserializeUser(async (id, done) => {
     try {
       console.log('Deserializing user with ID:', id);

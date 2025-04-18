@@ -47,6 +47,7 @@ const sessionStore = new pgSession({
     tableName: 'session' 
 });
 
+app.set('trust proxy', 1); // Trust first proxy for secure cookies
 app.use(session({
     store: sessionStore,
     secret: process.env.SESSION_SECRET || 'djfjdsjsk',
@@ -55,10 +56,10 @@ app.use(session({
     cookie: { 
         maxAge: 180 * 60 * 1000, 
         sameSite: 'lax', 
-        secure: process.env.NODE_ENV === 'production'
+        secure: process.env.NODE_ENV === 'production', // Ensure secure is true only in production
+        httpOnly: true
     } 
 }));
-
 // Initialize and configure passport
 configurePassport(passport);
 app.use(passport.initialize());
@@ -68,11 +69,7 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'build')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use((req, res, next) => {
-    console.log('Session:', req.session);
-    console.log('User:', req.user);
-    next();
-  });
+
 // routes
 app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
