@@ -12,13 +12,12 @@ const AdminDashboard = () => {
     const [salesData, setSalesData] = useState({ sales_count: 0, total: 0, total_buyer: 0 });
     const [loading, setLoading] = useState(false);
     const [activeMenu, setActiveMenu] = useState('Dashboard'); 
-    const [productForm, setProductForm] = useState({ id: '', name: '', price: '', image: null }); // Change img to null
+    const [productForm, setProductForm] = useState({ id: '', name: '', price: '', image: null });
     const [isEditing, setIsEditing] = useState(false);
     const chartRef = useRef(null); 
     const [fadeOut, setFadeOut] = useState(false);
     const navigate = useNavigate();
     const [isAddingProduct, setIsAddingProduct] = useState(false); 
-
 
     const handleLogout = async () => {
         try {
@@ -39,8 +38,7 @@ const AdminDashboard = () => {
             navigate('/'); 
         } catch (error) {
             console.error('Logout error:', error);
-            alert('Failed to log out. Please try again.');  
-          setAlertMessage('Failed to log out. Please try again.');
+            setAlertMessage('Failed to log out. Please try again.');
         }
     };
 
@@ -48,19 +46,58 @@ const AdminDashboard = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const productsResponse = await fetch(`${process.env.REACT_APP_API_URL}/products`);
-                const productsData = await productsResponse.json();
-
-                const salesResponse = await fetch(`${process.env.REACT_APP_API_URL}/admin/sales`);
-                const salesData = await salesResponse.json();
-
-                const ordersResponse = await fetch(`${process.env.REACT_APP_API_URL}/admin/orders`);
-                const ordersData = await ordersResponse.json();
+                
+                // Fetch products
+                try {
+                    const productsResponse = await fetch(`${process.env.REACT_APP_API_URL}/products`);
+                    if (productsResponse.ok) {
+                        const productsData = await productsResponse.json();
+                        setProducts(productsData);
+                    } else {
+                        console.error('Failed to fetch products:', productsResponse.status);
+                        setProducts([]);
+                    }
+                } catch (err) {
+                    console.error('Products fetch error:', err);
+                    setProducts([]);
+                }
+                
+                // Fetch admin sales data with credentials
+                try {
+                    const salesResponse = await fetch(`${process.env.REACT_APP_API_URL}/admin/sales`, {
+                        credentials: 'include' // Include credentials for authentication
+                    });
+                    
+                    if (salesResponse.ok) {
+                        const salesData = await salesResponse.json();
+                        setSalesData(salesData);
+                    } else {
+                        console.error('Failed to fetch sales data:', salesResponse.status);
+                        setSalesData({ sales_count: 0, total: 0, total_buyer: 0 });
+                    }
+                } catch (err) {
+                    console.error('Sales data fetch error:', err);
+                    setSalesData({ sales_count: 0, total: 0, total_buyer: 0 });
+                }
+                
+                // Fetch admin orders with credentials
+                try {
+                    const ordersResponse = await fetch(`${process.env.REACT_APP_API_URL}/admin/orders`, {
+                        credentials: 'include' // Include credentials for authentication
+                    });
+                    
+                    if (ordersResponse.ok) {
+                        const ordersData = await ordersResponse.json();
+                        setOrders(ordersData);
+                    } else {
+                        console.error('Failed to fetch orders:', ordersResponse.status);
+                        setOrders([]);
+                    }
+                } catch (err) {
+                    console.error('Orders fetch error:', err);
+                    setOrders([]);
+                }
               
-
-                setProducts(productsData);
-                setSalesData(salesData);
-                setOrders(ordersData);
             } catch (err) {
                 console.error('Failed to fetch data', err);
             } finally {
@@ -77,28 +114,30 @@ const AdminDashboard = () => {
         }
 
         if (salesData.sales_count > 0 && activeMenu === 'Dashboard') {
-            const ctx = document.getElementById('salesChart').getContext('2d');
-            chartRef.current = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], 
-                    datasets: [
-                        {
-                            label: 'Sales ($)',
-                            data: [1200, 1900, 3000, 5000, 2400], 
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            tension: 0.4,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'top' },
+            const ctx = document.getElementById('salesChart')?.getContext('2d');
+            if (ctx) {
+                chartRef.current = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], 
+                        datasets: [
+                            {
+                                label: 'Sales ($)',
+                                data: [1200, 1900, 3000, 5000, 2400], 
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                tension: 0.4,
+                            },
+                        ],
                     },
-                },
-            });
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' },
+                        },
+                    },
+                });
+            }
         }
 
         return () => {
@@ -108,8 +147,6 @@ const AdminDashboard = () => {
         };
     }, [salesData, activeMenu]);
 
-
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setProductForm({ ...productForm, [name]: value });
@@ -117,7 +154,6 @@ const AdminDashboard = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-
         
         if (file) {
             setProductForm(prevState => ({
@@ -132,41 +168,34 @@ const AdminDashboard = () => {
         setIsAddingProduct(true);
       
         if (!productForm.name || !productForm.price) {
-            alert('Please enter product name and price');
+            setAlertMessage('Please enter product name and price');
+            setIsAddingProduct(false);
             return;
         }
     
         if (!productForm.image) {
-            alert('Please select an image');
+            setAlertMessage('Please select an image');
+            setIsAddingProduct(false);
             return;
         }
     
-       
         const formData = new FormData();
         formData.append('image', productForm.image);
         formData.append('name', productForm.name);
         formData.append('price', productForm.price);
         
-
-    
         try {
-
-       
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}/products`, 
                 formData, 
                 {
                     headers: {
-            
                         'Content-Type': 'multipart/form-data',
-                    }
+                    },
+                    withCredentials: true // Include credentials with axios
                 }
             );
     
-           
-     
-           
-          
             // Update products list
             setProducts((prevProducts) => [...prevProducts, response.data]);
             
@@ -174,11 +203,8 @@ const AdminDashboard = () => {
             setProductForm({ id: '', name: '', price: '', image: null });
             
             setAlertMessage('Product added successfully!');
-
-         
-    
         } catch (error) {
-               alert();
+            console.error('Error adding product:', error);
             setAlertMessage(`Failed to add product: ${error.response ? error.response.data.error : error.message}`);
         } finally {
             setIsAddingProduct(false);
@@ -186,7 +212,12 @@ const AdminDashboard = () => {
     };
     
     const handleEditProduct = (product) => {
-        setProductForm({ id: product.id, name: product.name, price: product.price, image: null });
+        setProductForm({ 
+            id: product.id, 
+            name: product.name, 
+            price: product.price, 
+            image: null 
+        });
         setIsEditing(true);
     };
 
@@ -199,11 +230,6 @@ const AdminDashboard = () => {
         if (productForm.image) {
             formData.append('image', productForm.image);
         }
-
-        
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }
     
         try {
             const response = await axios.put(
@@ -212,7 +238,8 @@ const AdminDashboard = () => {
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                    }
+                    },
+                    withCredentials: true // Include credentials with axios
                 }
             );
     
@@ -220,7 +247,6 @@ const AdminDashboard = () => {
                 throw new Error('Failed to update product');
             }
     
-         
             const updatedProduct = response.data;
     
             setProducts((prevProducts) =>
@@ -234,6 +260,7 @@ const AdminDashboard = () => {
             setAlertMessage('Product Updated successfully!');
         } catch (error) {
             console.error('Error updating product:', error);
+            setAlertMessage('Failed to update product');
         } finally {
             setIsAddingProduct(false);
         }   
@@ -243,6 +270,7 @@ const AdminDashboard = () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/products/${id}`, {
                 method: 'DELETE',
+                credentials: 'include' // Include credentials
             });
 
             if (!response.ok) {
@@ -250,12 +278,19 @@ const AdminDashboard = () => {
             }
 
             setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
+            setAlertMessage('Product deleted successfully!');
         } catch (error) {
             console.error('Error deleting product:', error);
+            setAlertMessage('Failed to delete product');
         }
     };
 
     const getTopSellingProducts = () => {
+        // Guard against orders not being an array
+        if (!Array.isArray(orders) || orders.length === 0) {
+            return [];
+        }
+        
         const productSales = products.map(product => {
             const totalSales = orders.reduce((acc, order) => {
                 if (order.product_id === product.id) {
@@ -268,15 +303,20 @@ const AdminDashboard = () => {
         return productSales.sort((a, b) => b.totalSales - a.totalSales).slice(0, 5);
     };
 
-    const topSellingProducts = getTopSellingProducts();
-
     const getOrderSummary = () => {
+        // Guard against orders not being an array
+        if (!Array.isArray(orders) || orders.length === 0) {
+            return {};
+        }
+        
         return orders.reduce((acc, order) => {
             acc[order.payment_status] = (acc[order.payment_status] || 0) + 1;
             return acc;
         }, {});
     };
 
+    // Calculate these values safely using the guard functions
+    const topSellingProducts = getTopSellingProducts();
     const orderSummary = getOrderSummary();
 
     useEffect(() => {
@@ -285,14 +325,21 @@ const AdminDashboard = () => {
                 setFadeOut(true);
             }, 5000);
 
-            return () => clearTimeout(timer);
+            const clearAlertTimer = setTimeout(() => {
+                setAlertMessage('');
+                setFadeOut(false);
+            }, 5500);
+
+            return () => {
+                clearTimeout(timer);
+                clearTimeout(clearAlertTimer);
+            };
         } else {
             setFadeOut(false);
         }
     }, [alertMessage]);
 
     if (loading) return <Spinner />;
-
 
     return (
         <div className="admin-dashboard">
@@ -327,11 +374,15 @@ const AdminDashboard = () => {
                             </div>
                             <div className="order-summary">
                                 <h4>Order Summary by Status</h4>
-                                <ul>
-                                    {Object.entries(orderSummary).map(([status, count]) => (
-                                        <li key={status}>{status}: {count}</li>
-                                    ))}
-                                </ul>
+                                {Object.keys(orderSummary).length > 0 ? (
+                                    <ul>
+                                        {Object.entries(orderSummary).map(([status, count]) => (
+                                            <li key={status}>{status}: {count}</li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p>No order data available</p>
+                                )}
                             </div>
                         </section>
 
@@ -342,19 +393,23 @@ const AdminDashboard = () => {
 
                         <section className="top-products">
                             <h3>Top Selling Products</h3>
-                            <div className="top-products-grid">
-                                {topSellingProducts.map(product => (
-                                    <div className="top-product-card" key={product.id}>
-                                        <h4>{product.name}</h4>
-                                        <p className="product-price">Price: £{product.price}</p>
-                                        <p className="total-sales">Total Sales: {product.totalSales}</p>
-                                        <div className="actions">
-                                            <button className="view-button">View</button>
-                                            <button className="edit-button" onClick={() => handleEditProduct(product)}>Edit</button>
+                            {topSellingProducts.length > 0 ? (
+                                <div className="top-products-grid">
+                                    {topSellingProducts.map(product => (
+                                        <div className="top-product-card" key={product.id}>
+                                            <h4>{product.name}</h4>
+                                            <p className="product-price">Price: £{product.price}</p>
+                                            <p className="total-sales">Total Sales: {product.totalSales}</p>
+                                            <div className="actions">
+                                                <button className="view-button">View</button>
+                                                <button className="edit-button" onClick={() => handleEditProduct(product)}>Edit</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No sales data available</p>
+                            )}
                         </section>
                     </>
                 )}
@@ -383,7 +438,6 @@ const AdminDashboard = () => {
                             <input
                                 type="file"
                                 name="image"
-        
                                 placeholder="Product Image"
                                 accept="image/*"
                                 onChange={handleFileChange} 
@@ -391,23 +445,31 @@ const AdminDashboard = () => {
                             />
                             <button type="submit">{isEditing ? 'Update Product' : 'Add Product'}</button>
                             {isEditing && (
-                                <button type="button" onClick={() => { setProductForm({ id: '', name: '', price: '', img: null }); setIsEditing(false); }}>Cancel</button>
+                                <button type="button" onClick={() => { 
+                                    setProductForm({ id: '', name: '', price: '', image: null }); 
+                                    setIsEditing(false); 
+                                }}>
+                                    Cancel
+                                </button>
                             )}
                         </form>
-                         {isAddingProduct && <Spinner />}
+                        {isAddingProduct && <Spinner />}
                         <div className="products-grid">
-                     
-                            {products.map((product) => (
-                                <div key={product.id} className="product-card">
-                                    <img loading="lazy" src={product.img} alt={product.name} />
-                                    <h4>{product.name}</h4>
-                                    <p>Price: £{product.price}</p>
-                                    <div className="actions">
-                                        <button onClick={() => handleEditProduct(product)}>Edit</button>
-                                        <button onClick={() => handleDeleteProduct(product.id)}>Delete</button>
+                            {products.length > 0 ? (
+                                products.map((product) => (
+                                    <div key={product.id} className="product-card">
+                                        <img loading="lazy" src={product.img} alt={product.name} />
+                                        <h4>{product.name}</h4>
+                                        <p>Price: £{product.price}</p>
+                                        <div className="actions">
+                                            <button onClick={() => handleEditProduct(product)}>Edit</button>
+                                            <button onClick={() => handleDeleteProduct(product.id)}>Delete</button>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <p>No products available</p>
+                            )}
                         </div>
                     </section>
                 )}
@@ -415,7 +477,7 @@ const AdminDashboard = () => {
                 {activeMenu === 'Orders' && (
                     <section className="orders">
                         <h3>Order List</h3>
-                        {orders.length > 0 ? (
+                        {Array.isArray(orders) && orders.length > 0 ? (
                             <table className="orders-table">
                                 <thead>
                                     <tr>
@@ -449,7 +511,7 @@ const AdminDashboard = () => {
                         )}
                     </section>
                 )}
-                  {alertMessage && (
+                {alertMessage && (
                     <div className={`alert-popup ${fadeOut ? "alert-popup-exit" : ""}`}>
                         {alertMessage}
                     </div>
