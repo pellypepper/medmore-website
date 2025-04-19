@@ -40,8 +40,10 @@ export default function Detail() {
     };
 
     return (
-        <main>
-            <Navbar />
+        <main className="method-wrapper">
+         <section className="nav-method">
+         <Navbar />
+         </section>
             <section className="details-wrapper m-4 p-4">
                 <div className="detail-info">
                     <span>Amount to pay:</span>
@@ -91,7 +93,9 @@ export default function Detail() {
                     )}
                 </div>
             </section>
-            <Footer />
+      <section className="footer-method">
+      <Footer />
+        </section>
         </main>
     );
 }
