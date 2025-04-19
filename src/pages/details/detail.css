@@ -1,5 +1,6 @@
 
 .method-wrapper{
+    position: relative;
     height: 100vh;
     width: 100%;
     display: grid;
@@ -16,6 +17,8 @@
 .footer-method{
     grid-area:  footer-method;
     height: 100%;
+    position: absolute;
+    bottom: 0;
 }
 
 .details-wrapper {
