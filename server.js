@@ -11,11 +11,11 @@ const pgSession = require('connect-pg-simple')(session);
 const pool = require('./db');
 
 // Import route modules
-const authRoutes = require('./backend/auth');
-const productRoutes = require('./backend/products');
-const cartRoutes = require('./backend/cart');
-const paymentRoutes = require('./backend/payment');
-const salesRoutes = require('./backend/sales');
+const authRoutes = require('./backend/routes/auth');
+const productRoutes = require('./backend/routes/products');
+const cartRoutes = require('./backend/routes/cart');
+const paymentRoutes = require('./backend/routes/payment');
+const salesRoutes = require('./backend/routes/sales');
 
 // Import middleware
 const { configurePassport } = require('./backend/passport');
@@ -47,7 +47,7 @@ const sessionStore = new pgSession({
     tableName: 'session' 
 });
 
-app.set('trust proxy', 1); // Trust first proxy for secure cookies
+app.set('trust proxy', 1); 
 app.use(session({
     store: sessionStore,
     secret: process.env.SESSION_SECRET || 'djfjdsjsk',

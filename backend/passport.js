@@ -50,11 +50,6 @@ const configurePassport = (passport) => {
 };
 
 // Middleware to check if user is admin
-const isAdmin = (req, res, next) => {
-  if (req.isAuthenticated() && req.user.isadmin) {
-    return next();
-  }
-  res.status(403).json({ error: "Access denied" });
-};
 
-module.exports = { configurePassport, isAdmin };
+
+module.exports = { configurePassport };
