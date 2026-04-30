@@ -1,0 +1,80 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box ;
+}
+/* 
+@font-face {
+  font-family: 'YourCustomFont';
+  src: url('/fonts/woff.woff2') format('woff2');
+  font-display: swap;
+} */
+
+
+body {
+  font-family: 'YourCustomFont', sans-serif;
+}
+
+/* Atkinson Hyperlegible Next Example */
+.atkinson-hyperlegible-next {
+  font-family: "Atkinson Hyperlegible Next", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;  /* Regular weight */
+  font-style: normal;
+}
+
+body{
+  font-family: "Mirza", serif;
+
+  color: var(--font-light-color);
+  width: 100%;
+ 
+}
+
+
+:root{
+  --primary-color: #065a60;
+  --primary-color-light: #5c8778;
+  --primary-color-dark: #2b3a35;
+  --secondary-color: white;
+  --background-dark-color:  black;
+  --border-color: #2e344e;
+  --background-light-color: #f1f1f1;
+  --white-color: #FFF;
+  --font-light-color:  white;
+  --font-dark-color:  darkgrey;
+  --font-dark-color-2: #151515;
+  --sidebar-dark-color: #191d2b;
+  --scrollbar-bg-color: #383838;
+  --scrollbar-thump-color: #6b6b6b;
+  --scrollbar-track-color: #383838;
+
+
+  --xs-xs : 12.2px;
+  --xs-sm : 12.4px;
+  --xs-md : 12.6px;
+  --xs-lg : 13px;
+  --xs-xl : 16px;
+  
+  --mob-xs : 12.4px;
+  --mob-sm : 12.6px;
+  --mob-md : 12.8px;
+  --mob-lg : 16px;
+  --mob-xl : 19.2px;
+  
+  --med-xs : 9.6px;
+  --med-sm : 12.8px;
+  --med-md : 16px;
+  --med-lg : 19.2px;
+  --med-xl : 22.4px;
+  
+  --big-xs : 12.8px;
+  --big-sm : 16px;
+  --big-md : 19.2px;
+  --big-lg : 22.4px;
+  --big-xl : 25.6px;
+  
+
+}
+
+
