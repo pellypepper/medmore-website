@@ -1,4 +1,4 @@
-const pool = require('../../db');
+const pool = require('../db');
 const transformCloudinaryUrl = require('../utils/transformCloudinaryUrl');
 
 // Create a product

@@ -6,8 +6,8 @@ const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET_KEY, {
       url: "https://github.com/stripe-samples/checkout-one-time-payments"
     }
   });
-  const pool = require('../../db');
-  const { sendEmail } = require('../../mailer');
+  const pool = require('../db');
+  const { sendEmail } = require('../mailer');
   
   // GET /checkout-session
   exports.getCheckoutSession = async (req, res) => {

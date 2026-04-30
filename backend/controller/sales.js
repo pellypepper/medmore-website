@@ -1,5 +1,5 @@
 
-const pool = require('../../db');
+const pool = require('../db');
 
 // Get orders
 const orders = async (req, res) => {
