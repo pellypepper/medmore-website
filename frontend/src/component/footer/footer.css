@@ -1,0 +1,113 @@
+footer{
+    min-height: 200px;
+    background-color: var(--background-dark-color);
+}
+
+.footer-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px;
+   
+    color: white;
+}
+.footer-wrapper .row{
+
+    display: flex;
+  justify-content: space-around;
+
+}
+span{
+    font-size: var(--med-sm);
+}
+.footer .icon-wrapper span {
+    width: 50px;
+    height: 50px;
+}
+
+.row-1{
+    gap: 25px;
+}
+
+.icon-wrapper{
+    gap: 20px;
+}
+div p{
+    font-size: var(--med-md);
+}
+
+.footer-2{
+   
+display: flex;
+flex-direction: column;
+min-width:  200px;
+}
+
+.footer-2  textarea{
+
+    width: 100%;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+    resize: none;
+    height: 40px;
+}
+
+.footer-2 button{
+    width: 100%;
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+text-align: center;
+
+}
+
+
+.footer-2 button:hover{
+    background-color: white;
+
+    color: var(--primary-color);
+}
+
+.footer-bottom{
+    color: var(--font-light-color);
+    text-align: center;
+    padding: 10px;
+}
+.icon-wrapper svg {
+    width: 50px;
+    height: 50px;
+  }
+  
+@media screen and (max-width: 481px){
+    div p{
+        font-size: var(--mob-sm);
+    }
+    span{
+        font-size: var(--mob-sm);
+    }
+    
+}
+@media screen and (max-width: 390px){
+    footer div p{
+        font-size: 12px;
+    }
+    footer span{
+        font-size: 12px;
+    }
+    
+}
+
+@media screen and (min-width: 1024px){
+    div p{
+        font-size: var(--big-md);
+    }
+    span{
+        font-size: var(--big-sm);
+    }
+    
+}
