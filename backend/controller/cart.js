@@ -7,7 +7,7 @@ const pool = require('../db');
 const userId = async (req, res) => {
     const { userId } = req.params;
   
-   
+  
   
     try {
       const cartItems = await pool.query(
@@ -50,7 +50,9 @@ const userId = async (req, res) => {
   
       return res.status(400).json({ error: 'Bad Request: Missing required fields' });
     }
-  
+
+
+   
     try {
       // Check if the product already exists in the cart
       const existingItem = await pool.query(

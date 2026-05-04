@@ -39,8 +39,9 @@ export default function Payment() {
             <section>
             <Navbar />
             </section>
-            <section className="payment-section">
-                <h2 className="payment-title">Choose Payment Method</h2>
+            <section >
+<div className="payment-section">
+                    <h2 className="payment-title">Choose Payment Method</h2>
                 {loading && <Spinner />} 
                 <form className="payment-options" onSubmit={handleClick}>
                     <div className="payment-option">
@@ -74,8 +75,9 @@ export default function Payment() {
                         </button>
                     </div>
                 </form>
+</div>
             </section>
-    <section>
+<section className='footer-wrap'>
     <Footer />
     </section>
         </main>

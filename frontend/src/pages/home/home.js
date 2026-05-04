@@ -19,7 +19,6 @@ export default function Home({ removeFromCart }) {
     const [loadingProducts, setLoadingProducts] = useState(true);
     const [loadingCart, setLoadingCart] = useState(true);
 
-
     const getUserId = () => {
         let userId = sessionStorage.getItem("user_id");
         if (!userId) {
@@ -35,12 +34,12 @@ export default function Home({ removeFromCart }) {
 
     const fetchCart = useCallback(async () => {
         const userId = getUserId();
-        setLoadingCart(true); 
+        setLoadingCart(true);
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/cart/${userId}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const cartData = await response.json();
-            setCart(cartData); 
+            setCart(cartData);
             updateSessionStorageCart(cartData);
         } catch (error) {
             console.error("Error fetching cart:", error);
@@ -50,37 +49,34 @@ export default function Home({ removeFromCart }) {
         }
     }, []);
 
-
     const addToCart = async (product, quantity) => {
         const userId = getUserId();
         const parsedQuantity = parseInt(quantity);
-        setCart(prevCart => {
-            const existingProductIndex = prevCart.findIndex(item => item.id === product.id);
-            let updatedCart;
 
+        // Optimistic update
+        setCart(prevCart => {
+            const existingProductIndex = prevCart.findIndex(item => item.productId === product.id);
             if (existingProductIndex > -1) {
-                updatedCart = prevCart.map((item, index) =>
-                    index === existingProductIndex
+                return prevCart.map((item, i) =>
+                    i === existingProductIndex
                         ? { ...item, quantity: item.quantity + parsedQuantity }
                         : item
                 );
-            } else {
-                updatedCart = [...prevCart, { ...product, quantity: parsedQuantity }];
             }
-
-            return updatedCart;
+            return [...prevCart, {
+                productId: product.id,
+                productName: product.name,
+                price: parseFloat(product.price),
+                quantity: parsedQuantity
+            }];
         });
-
-        updateSessionStorageCart(cart); 
 
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userId: userId,
+                    userId,
                     product: {
                         id: product.id,
                         name: product.name,
@@ -91,30 +87,20 @@ export default function Home({ removeFromCart }) {
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to add item to cart");
-            }
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Failed to add item to cart");
 
-            const updatedCartFromServer = await response.json();
-            if (JSON.stringify(cart) !== JSON.stringify(updatedCartFromServer)) {
-                setCart(updatedCartFromServer);
-                updateSessionStorageCart(updatedCartFromServer);
-            }
-
-          
-            await fetchCart();
+            setCart(data);
+            updateSessionStorageCart(data);
             setAlertMessage(`${product.name} has been added to the cart.`);
         } catch (error) {
             console.error("Error updating cart on server:", error);
-            
         }
     };
 
-
-
+    // Fetch products
     useEffect(() => {
         const fetchProducts = async () => {
-            setLoadingProducts(false);
             try {
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/products`);
                 if (!response.ok) throw new Error("Failed to fetch products");
@@ -127,44 +113,37 @@ export default function Home({ removeFromCart }) {
                 setLoadingProducts(false);
             }
         };
-
         fetchProducts();
     }, []);
 
     useEffect(() => {
-        fetchCart(); 
-    }, [fetchCart]); 
+        fetchCart();
+    }, [fetchCart]);
 
-
-
-
-
+    // Alert fade out
     useEffect(() => {
         if (alertMessage) {
-            const timer = setTimeout(() => {
-                setFadeOut(true);
-            }, 5000);
-
+            const timer = setTimeout(() => setFadeOut(true), 5000);
             return () => clearTimeout(timer);
         } else {
             setFadeOut(false);
         }
     }, [alertMessage]);
 
+    // Filter products by search
     useEffect(() => {
         if (searchQuery) {
-            const filtered = products.filter(product =>
-                product.name.toLowerCase().includes(searchQuery.toLowerCase())
+            setFilteredProducts(
+                products.filter(product =>
+                    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+                )
             );
-            setFilteredProducts(filtered);
         } else {
-            setFilteredProducts(products); 
+            setFilteredProducts(products);
         }
     }, [searchQuery, products]);
 
-    if (loadingCart) {
-        return <Spinner />;
-    }
+    if (loadingCart) return <Spinner />;
 
     return (
         <main className="Home">
@@ -172,7 +151,7 @@ export default function Home({ removeFromCart }) {
             <section className="home-text-wrapper">
                 <div className="row p-5 text-center">
                     <div className="home-text">
-                        <img   alt="background logo" src="/web-app-manifest-192x192.webp" />
+                        <img alt="background logo" src="/web-app-manifest-192x192.webp" />
                         <h1>Welcome to MedMore Store</h1>
                         <span>Where you can find the best food products</span>
                     </div>
@@ -197,7 +176,7 @@ export default function Home({ removeFromCart }) {
             </section>
 
             {alertMessage && (
-                <div className={`alert-popup ${fadeOut ? 'alert-popup-exit' : ''}`}>
+                <div className={`alert-popup ${fadeOut ? "alert-popup-exit" : ""}`}>
                     {alertMessage}
                 </div>
             )}
@@ -207,11 +186,9 @@ export default function Home({ removeFromCart }) {
             </section>
 
             <div className="whatsapp-logo">
-
-                <a href="https://wa.me/4407398653511" target="_blank" rel="noopener noreferrer" class="whatsapp-button" aria-label="Chat with us on WhatsApp">
+                <a href="https://wa.me/4407398653511" target="_blank" rel="noopener noreferrer" className="whatsapp-button" aria-label="Chat with us on WhatsApp">
                     <FaWhatsapp size={40} color="#25D366" />
                 </a>
-
             </div>
         </main>
     );
