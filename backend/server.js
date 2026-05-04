@@ -66,7 +66,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Serve static files
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
@@ -77,9 +77,12 @@ app.use('/cart', cartRoutes);
 app.use('/payment', paymentRoutes);
 app.use('/admin', salesRoutes);
 
+
+
+
 // Serve React app for all other routes
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 // Start the server

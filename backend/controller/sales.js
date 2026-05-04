@@ -20,9 +20,7 @@ const orders = async (req, res) => {
         FROM "orders"`
       );
   
-      if (result.rows.length === 0) {
-        return res.status(404).json({ message: 'No orders available' });
-      }
+     
   
       res.json(result.rows);
     } catch (error) {
@@ -42,9 +40,7 @@ const sales =  async (req, res) => {
         FROM "sales"`
       );
   
-      if (result.rows.length === 0) {
-        return res.status(404).json({ message: 'No sales data available' });
-      }
+    
   
       res.json(result.rows[0]); // Return total sales information
     } catch (error) {

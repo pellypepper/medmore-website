@@ -38,12 +38,12 @@ const configurePassport = (passport) => {
 
   passport.deserializeUser(async (id, done) => {
     try {
-      console.log('Deserializing user with ID:', id);
+    
       const result = await pool.query('SELECT * FROM "users" WHERE id = $1', [id]);
-      console.log('User found:', result.rows[0]);
+      
       done(null, result.rows[0]);
     } catch (err) {
-      console.error('Error deserializing user:', err);
+  
       done(err, null);
     }
   });

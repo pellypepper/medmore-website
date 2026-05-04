@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 // Function to create a transporter based on the email service
 const createTransporter = (service) => {
     return nodemailer.createTransport({
-        service: 'gmail', // Email service provider: 'gmail', 'yahoo', 'hotmail', etc.
+        service: 'gmail', 
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS, 
