@@ -18,9 +18,9 @@ export default function Checkout({ removeFromCart }) {
         number: "",
         address: "",
         shippingMethod: "standard",
-        country: "", 
-        state: ""  ,
-        postcode: "", 
+        country: "",
+        state: "",
+        postcode: "",
     });
     const [alertMessage, setAlertMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -36,39 +36,29 @@ export default function Checkout({ removeFromCart }) {
         sessionStorage.setItem("cart", JSON.stringify(newCart));
     };
 
-    // Calculate the total price
+    const calculateSubtotal = () =>
+        cart.reduce((total, product) => total + product.price * product.quantity, 0);
+
     const calculateTotal = () => {
-        const subtotal = cart.reduce(
-            (total, product) => total + product.price * product.quantity,
-            0
-        );
         const shippingCost = shippingFees[form.shippingMethod] || 0;
-        return subtotal + shippingCost;
+        return calculateSubtotal() + shippingCost;
     };
 
-    // Handle form input changes
-    const handleInputChange = ({ target: { name, value } }) => {
-        setForm((prevForm) => ({ ...prevForm, [name]: value }));
-    };
+    const handleInputChange = ({ target: { name, value } }) =>
+        setForm((prev) => ({ ...prev, [name]: value }));
 
-    // Handle country selection
-    const handleCountrySelect = (country) => {
-        setForm((prevForm) => ({ ...prevForm, country }));
-    };
+    const handleCountrySelect = (country) =>
+        setForm((prev) => ({ ...prev, country }));
 
-    // Handle state selection
-    const handleStateSelect = (state) => {
-        setForm((prevForm) => ({ ...prevForm, state }));
-    };
+    const handleStateSelect = (state) =>
+        setForm((prev) => ({ ...prev, state }));
 
-    // Remove product from cart
     const handleRemoveFromCart = (product) => {
         removeFromCart(product);
         updateCart(cart.filter((item) => item.productId !== product.productId));
-        setAlertMessage(`${product.productName} has been removed from your cart.`);
+        setAlertMessage(`${product.productName} removed from cart.`);
     };
 
-    // Manage alert lifecycle
     useEffect(() => {
         if (alertMessage) {
             const timer = setTimeout(() => setAlertMessage(""), 5000);
@@ -76,28 +66,30 @@ export default function Checkout({ removeFromCart }) {
         }
     }, [alertMessage]);
 
-    // Handle form submission
     const handleOrderSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         const total = calculateTotal();
-        
-        
-        await new Promise((resolve) => setTimeout(resolve, 1000)); 
-      
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         navigate("/payment", { state: { total, cart, form } });
-        setLoading(false); 
+        setLoading(false);
     };
+
+    const shippingCost = shippingFees[form.shippingMethod] || 0;
 
     return (
         <main className="checkout-section">
             <Navbar />
+
             <section className="checkout-main">
+                {loading && <Spinner />}
+
                 <div className="checkout-container">
-                    {loading && <Spinner />} 
-             
+
+                    {/* ── Cart panel ── */}
                     <div className="cart-section">
                         <h2>Your Cart</h2>
+
                         <div className="cart-list">
                             {cart.length === 0 ? (
                                 <p>Your cart is empty.</p>
@@ -106,9 +98,7 @@ export default function Checkout({ removeFromCart }) {
                                     <div key={index} className="cart-item">
                                         <div className="cart-item-details">
                                             <p>{product.productName}</p>
-                                            <p>
-                                                £{product.price} x {product.quantity} 
-                                            </p>
+                                            <p>£{product.price.toFixed(2)} × {product.quantity}</p>
                                         </div>
                                         <button
                                             onClick={() => handleRemoveFromCart(product)}
@@ -120,7 +110,11 @@ export default function Checkout({ removeFromCart }) {
                                 ))
                             )}
                         </div>
-                        {alertMessage && <div className="alert-popup">{alertMessage}</div>}
+
+                        {alertMessage && (
+                            <div className="alert-popup">{alertMessage}</div>
+                        )}
+
                         <div className="shipping-wrapper">
                             <h3>Shipping Method</h3>
                             <ShippingMethod
@@ -128,15 +122,17 @@ export default function Checkout({ removeFromCart }) {
                                 handleChange={handleInputChange}
                             />
                         </div>
+
                         <div className="cart-total">
-                            <h4>Items: {cart.length}</h4>
+                            <h4>{cart.length} item{cart.length !== 1 ? 's' : ''}</h4>
                             <h4>Total: £{calculateTotal().toFixed(2)}</h4>
                         </div>
                     </div>
 
-                    {/* Checkout Form Section */}
+                    {/* ── Form panel ── */}
                     <div className="checkout-form-section">
                         <h2>Checkout Details</h2>
+
                         <form onSubmit={handleOrderSubmit}>
                             <div className="input-wrapper">
                                 <input
@@ -145,7 +141,6 @@ export default function Checkout({ removeFromCart }) {
                                     value={form.firstname}
                                     onChange={handleInputChange}
                                     placeholder="First Name"
-                                    className="col-6 p-2"
                                     required
                                 />
                                 <input
@@ -154,18 +149,17 @@ export default function Checkout({ removeFromCart }) {
                                     value={form.lastname}
                                     onChange={handleInputChange}
                                     placeholder="Last Name"
-                                    className="col-5 p-2"
                                     required
                                 />
                             </div>
+
                             <div className="input-wrapper">
                                 <input
                                     type="email"
                                     name="email"
                                     value={form.email}
                                     onChange={handleInputChange}
-                                    placeholder="Email"
-                                    className="col-6 p-2"
+                                    placeholder="Email Address"
                                     required
                                 />
                                 <input
@@ -174,38 +168,41 @@ export default function Checkout({ removeFromCart }) {
                                     value={form.number}
                                     onChange={handleInputChange}
                                     placeholder="Phone Number"
-                                    className="col-5 p-2"
                                     required
                                 />
                             </div>
+
                             <textarea
                                 name="address"
                                 value={form.address}
                                 onChange={handleInputChange}
                                 placeholder="Shipping Address"
-                                className="col-12 p-2"
                                 required
                             />
+
                             <Country
-                                onCountrySelect={handleCountrySelect} 
-                                onStateSelect={handleStateSelect} 
+                                onCountrySelect={handleCountrySelect}
+                                onStateSelect={handleStateSelect}
                             />
+
                             <input
-                                  name="postcode"
                                 type="text"
+                                name="postcode"
                                 value={form.postcode}
                                 onChange={handleInputChange}
-                                placeholder="Zip/Post code"
-                                className="col-12 p-2"
+                                placeholder="Zip / Postcode"
                                 required
                             />
+
                             <button type="submit" disabled={loading}>
-                                {loading ? "Processing..." : "Proceed to Payment"}
+                                {loading ? "Processing..." : "Proceed to Payment →"}
                             </button>
                         </form>
                     </div>
+
                 </div>
             </section>
+
             <Footer />
         </main>
     );

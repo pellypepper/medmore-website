@@ -6,6 +6,7 @@ footer {
     position: relative;
     overflow: hidden;
     font-family: 'DM Sans', sans-serif;
+        color: white;
 }
 
 /* subtle grain texture overlay */
@@ -33,7 +34,7 @@ footer::after {
     position: relative;
     z-index: 1;
     padding: 60px 48px 40px;
-    color: white;
+
 }
 
 .footer-wrapper .row {
@@ -49,7 +50,7 @@ footer::after {
     font-weight: 600;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
+    color: rgba(255, 255, 255, 0.89);
     margin-bottom: 28px;
 }
 
@@ -64,7 +65,7 @@ footer::after {
 .row-1 p {
     font-size: 14px;
     font-weight: 300;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255, 255, 255, 0.815);
     margin: 0;
     line-height: 1.5;
     letter-spacing: 0.02em;
@@ -78,13 +79,13 @@ footer::after {
     height: 34px;
     border-radius: 50%;
     background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.349);
     flex-shrink: 0;
     transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .row-1:hover .contact-icon {
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.801);
     border-color: rgba(255,255,255,0.2);
 }
 
@@ -102,7 +103,7 @@ footer::after {
     width: 48px;
     height: 30px;
     background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.212);
     border-radius: 6px;
     transition: background 0.25s ease, transform 0.25s ease;
     cursor: default;
@@ -128,11 +129,12 @@ footer::after {
 
 .footer-2 .footer-col-label {
     margin-bottom: 10px;
+     color: rgba(255, 255, 255, 0.89);
 }
 
 .footer-tagline {
     font-size: 13px;
-    color: rgba(255,255,255,0.4);
+    color: rgba(255, 255, 255, 0.733);
     margin-bottom: 20px;
     font-weight: 300;
     line-height: 1.6;
@@ -160,7 +162,7 @@ footer::after {
 }
 
 .footer-2 textarea::placeholder {
-    color: rgba(255,255,255,0.3);
+    color: rgba(255, 255, 255, 0.432);
 }
 
 .footer-2 textarea:focus {

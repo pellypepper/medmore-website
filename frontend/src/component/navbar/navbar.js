@@ -12,21 +12,18 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
     const cartRef = useRef(null);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
 
     const toggleVisibility = (ref) => ref.current?.classList.toggle("active");
     const closeVisibility = (ref) => ref.current?.classList.remove("active");
 
     const handleLoginFormSubmit = async (e) => {
         e.preventDefault();
-
         if (!email || !password) {
             alert("Please enter both email and password.");
             return;
         }
-
         setLoading(true);
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
@@ -35,23 +32,18 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
-
             if (!response.ok) {
                 const errorData = await response.json();
                 alert(errorData.error || "Login failed");
                 return;
             }
-
             const data = await response.json();
-            console.log("Login successful:", data);
-
-            if (data.user?.isadmin) {
-                navigate("/admin"); 
+            if (data.user?.isAdmin) {
+                navigate("/admin");
             } else {
                 alert("You do not have permission to access the admin page.");
             }
         } catch (error) {
-            console.error("Network error:", error);
             alert("An error occurred. Please try again later.");
         } finally {
             setLoading(false);
@@ -62,28 +54,42 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
         <main className="main">
             <div className="container-fluid">
                 <div className="row h-100">
+                    {/* Logo */}
                     <div className="logo-wrapper col-6">
-                        <Link to="/"><div className="logo">MEDMORE</div>
-</Link>
+                        <Link to="/">
+                            <div className="logo">MEDMORE</div>
+                        </Link>
                     </div>
+
+                    {/* Icon Buttons */}
                     <nav className="col-6 d-flex justify-content-end">
-                        <button onClick={() => toggleVisibility(searchRef)} aria-label="Search Button" className="rounded-pill">
+                        <button onClick={() => toggleVisibility(searchRef)} aria-label="Search Button">
                             <FaSearch className="icon" />
                         </button>
-                        <button onClick={() => toggleVisibility(loginRef)} aria-label="Profile-icon" className="rounded-pill">
+                        <button onClick={() => toggleVisibility(loginRef)} aria-label="Profile-icon">
                             <FaUser className="icon" />
                         </button>
-                        <button onClick={() => toggleVisibility(menuRef)} aria-label="Menu-icon" className="rounded-pill">
+                        <button onClick={() => toggleVisibility(menuRef)} aria-label="Menu-icon">
                             <FaBars className="icon" />
                         </button>
-                        <button onClick={() => toggleVisibility(cartRef)} aria-label="Shopping-cart" className="rounded-pill">
+                        <button onClick={() => toggleVisibility(cartRef)} aria-label="Shopping-cart">
                             <FaShoppingCart className="icon" />
                         </button>
                     </nav>
                 </div>
             </div>
 
-            {/* Sidebar Menu */}
+            {/* ── Search Bar ── */}
+            <form className="form" ref={searchRef} onSubmit={(e) => e.preventDefault()}>
+                <input
+                    type="search"
+                    placeholder="Search products…"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <FaTimes onClick={() => closeVisibility(searchRef)} className="times" />
+            </form>
+
+            {/* ── Side Menu ── */}
             <aside className="side-menu" ref={menuRef}>
                 <div onClick={() => closeVisibility(menuRef)} className="close-div">
                     <FaTimes className="times" />
@@ -91,36 +97,26 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
                 <nav>
                     <ul>
                         <li><Link to="/">Home</Link></li>
-                        <p></p>
-                        <li><Link to="/about">About</Link></li>
-                        <p></p>
-                        <li><Link to="/services">Services</Link></li>
-                        <p></p>
-                        <li><Link to="/contact">Contact</Link></li>
-                        <p></p>
+                        <li><Link to="#">About</Link></li>
+                        <li><Link to="#">Services</Link></li>
+                        <li><Link to="#">Contact</Link></li>
                     </ul>
                 </nav>
             </aside>
 
-            {/* Search Form */}
-            <form className="form" ref={searchRef} onSubmit={(e) => e.preventDefault()}>
-                <input
-                    type="search"
-                    placeholder="Search"
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <FaTimes onClick={() => closeVisibility(searchRef)} className="times" />
-            </form>
-
-            {/* Login Modal */}
+            {/* ── Login Modal ── */}
             <div className="login" ref={loginRef}>
                 <div className="login-wrapper">
-                    <FaTimes onClick={() => closeVisibility(loginRef)} className="times" />
+                    <FaTimes
+                        onClick={() => closeVisibility(loginRef)}
+                        className="times"
+                        style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', cursor: 'pointer', color: 'rgba(30,30,30,0.35)', fontSize: 16 }}
+                    />
                     <h3>LOGIN</h3>
-                    <p className="border"></p>
+                    <p className="border" />
                     <form onSubmit={handleLoginFormSubmit}>
                         <input
-                            placeholder="Email Address"
+                            placeholder="Email address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             type="email"
@@ -138,16 +134,16 @@ export default function Navbar({ cart, setCart, removeFromCart, setSearchQuery }
                                 <input type="checkbox" />
                                 <span>Remember me</span>
                             </div>
-                            <Link to="/forgot-password">Forgot Password?</Link>
+                            <Link to="/forgot-password">Forgot password?</Link>
                         </div>
-                        <button type="submit">
-                            {loading ? <Spinner /> : "Submit"}
+                        <button type="submit" disabled={loading}>
+                            {loading ? <Spinner /> : "Sign In"}
                         </button>
                     </form>
                 </div>
             </div>
 
-            {/* Cart Modal */}
+            {/* ── Cart Panel ── */}
             <div ref={cartRef} className="cart">
                 <Cart
                     cartRef={cartRef}
