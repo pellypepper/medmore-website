@@ -12,7 +12,7 @@ const userId = async (req, res) => {
     try {
       const cartItems = await pool.query(
         `SELECT ci.id, ci.product_id, ci.user_id, ci.quantity, 
-               p.name AS product_name, p.price 
+               p.name AS product_name, p.price ,p.img
         FROM "cart_items" ci 
         LEFT JOIN "products" p ON ci.product_id = p.id 
         WHERE ci.user_id = $1`,
@@ -32,6 +32,7 @@ const userId = async (req, res) => {
         productId: item.product_id,
         quantity: item.quantity,
         productName: item.product_name || 'Unknown Product',
+        productImg: item.img,
         price: item.price ? parseFloat(item.price) : 0.0
       }));
   
@@ -78,7 +79,7 @@ const userId = async (req, res) => {
         }
   
         await pool.query(
-          'INSERT INTO "cart_items" (user_id, product_id, quantity) VALUES ($1, $2, $3)',
+          'INSERT INTO "cart_items" (user_id, product_id, quantity) VALUES ($1, $2, $3,)',
           [userId, product.id, quantity]
         );
   
@@ -100,6 +101,7 @@ const userId = async (req, res) => {
         productId: item.product_id,
         quantity: item.quantity,
         productName: item.product_name,
+  
         price: parseFloat(item.price)
       }));
   

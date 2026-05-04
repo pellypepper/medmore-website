@@ -53,7 +53,6 @@ export default function Home({ removeFromCart }) {
         const userId = getUserId();
         const parsedQuantity = parseInt(quantity);
 
-        // Optimistic update
         setCart(prevCart => {
             const existingProductIndex = prevCart.findIndex(item => item.productId === product.id);
             if (existingProductIndex > -1) {
@@ -77,12 +76,7 @@ export default function Home({ removeFromCart }) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     userId,
-                    product: {
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        img: product.img,
-                    },
+                    product: { id: product.id, name: product.name, price: product.price, img: product.img },
                     quantity: parsedQuantity,
                 }),
             });
@@ -92,13 +86,12 @@ export default function Home({ removeFromCart }) {
 
             setCart(data);
             updateSessionStorageCart(data);
-            setAlertMessage(`${product.name} has been added to the cart.`);
+            setAlertMessage(`${product.name} added to cart`);
         } catch (error) {
             console.error("Error updating cart on server:", error);
         }
     };
 
-    // Fetch products
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -116,11 +109,8 @@ export default function Home({ removeFromCart }) {
         fetchProducts();
     }, []);
 
-    useEffect(() => {
-        fetchCart();
-    }, [fetchCart]);
+    useEffect(() => { fetchCart(); }, [fetchCart]);
 
-    // Alert fade out
     useEffect(() => {
         if (alertMessage) {
             const timer = setTimeout(() => setFadeOut(true), 5000);
@@ -130,7 +120,6 @@ export default function Home({ removeFromCart }) {
         }
     }, [alertMessage]);
 
-    // Filter products by search
     useEffect(() => {
         if (searchQuery) {
             setFilteredProducts(
@@ -147,23 +136,32 @@ export default function Home({ removeFromCart }) {
 
     return (
         <main className="Home">
-            <Navbar removeFromCart={removeFromCart} cart={cart} setCart={setCart} setSearchQuery={setSearchQuery} />
+            <Navbar
+                removeFromCart={removeFromCart}
+                cart={cart}
+                setCart={setCart}
+                setSearchQuery={setSearchQuery}
+            />
+
+            {/* ── Hero ── */}
             <section className="home-text-wrapper">
                 <div className="row p-5 text-center">
                     <div className="home-text">
-                        <img alt="background logo" src="/web-app-manifest-192x192.webp" />
+                        <span className="home-text-tag">Premium Food Store</span>
+                        <img alt="MedMore logo" src="/web-app-manifest-192x192.webp" />
                         <h1>Welcome to MedMore Store</h1>
                         <span>Where you can find the best food products</span>
                     </div>
-                    <div className="home-btn d-flex flex-column flex-md-row justify-content-center mt-4">
-                        <button className="col-12 col-md-4 my-1 mx-1">New Product</button>
-                        <button className="col-12 col-md-4 my-1 mx-1">All Products</button>
-                        <button className="col-12 col-md-4 my-1 mx-1">Our Favorites</button>
+                    <div className="home-btn mt-4">
+                        <button className="col-12 col-md-3 my-1 mx-1">New Products</button>
+                        <button className="col-12 col-md-3 my-1 mx-1">All Products</button>
+                        <button className="col-12 col-md-3 my-1 mx-1">Our Favourites</button>
                     </div>
                 </div>
             </section>
 
-            <section>
+            {/* ── Products ── */}
+            <section className="home-products-section">
                 {loadingProducts ? (
                     <Spinner />
                 ) : (
@@ -186,8 +184,14 @@ export default function Home({ removeFromCart }) {
             </section>
 
             <div className="whatsapp-logo">
-                <a href="https://wa.me/4407398653511" target="_blank" rel="noopener noreferrer" className="whatsapp-button" aria-label="Chat with us on WhatsApp">
-                    <FaWhatsapp size={40} color="#25D366" />
+                <a
+                    href="https://wa.me/4407398653511"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="whatsapp-button"
+                    aria-label="Chat with us on WhatsApp"
+                >
+                    <FaWhatsapp size={28} color="#25D366" />
                 </a>
             </div>
         </main>
