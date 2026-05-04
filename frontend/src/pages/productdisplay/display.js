@@ -30,14 +30,16 @@ export default function ProductDisplay() {
 
     const adjustQuantity = (amount) => {
         const updatedCart = cart.map((item) =>
-            item.id === product.id ? { ...item, quantity: Math.max(item.quantity + amount, 1) } : item
+            item.id === product.id
+                ? { ...item, quantity: Math.max(item.quantity + amount, 1) }
+                : item
         );
         updateCart(updatedCart);
     };
 
     const handleCheckout = async () => {
         setLoading(true);
-        
+
         const updatedCart = cart.some(item => item.id === product.id)
             ? cart.map(item =>
                 item.id === product.id
@@ -45,18 +47,15 @@ export default function ProductDisplay() {
                     : item
               )
             : [...cart, { ...product, quantity: 1 }];
-        
-        updateCart(updatedCart);
 
-        // Simulate delay
+        updateCart(updatedCart);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setLoading(false);
-
         navigate("/checkout");
     };
 
     return (
-        <main>
+        <main style={{ background: '#f4f4f1', minHeight: '100vh' }}>
             <Navbar />
             <section className="product-section my-4 container">
                 {loading && <Spinner />}
@@ -66,7 +65,7 @@ export default function ProductDisplay() {
                     </div>
                     <div className="product-text mt-4 mt-md-0">
                         <h1>{product.name}</h1>
-                        <span>${product.price}</span>
+                        <span>£{product.price}</span>
                         <div className="rating">
                             {stars.map((star, index) => (
                                 <FontAwesomeIcon key={index} icon={star} className="star" />
@@ -74,17 +73,17 @@ export default function ProductDisplay() {
                         </div>
                         <p>Quantity</p>
                         <div className="quantity-controls">
-                            <button className="btn-1" onClick={() => adjustQuantity(-1)}>-</button>
+                            <button className="btn-1" onClick={() => adjustQuantity(-1)}>−</button>
                             <span>{cart.find(item => item.id === product.id)?.quantity || 1}</span>
                             <button className="btn-1" onClick={() => adjustQuantity(1)}>+</button>
                         </div>
                         <div className="reviews">
                             <p>Reviews</p>
                             <span>Pickup available within Liverpool</span>
-                            <span>Usually ready in 24 Hours</span>
+                            <span>Usually ready in 24 hours</span>
                         </div>
                         <button className="btn" onClick={handleCheckout} disabled={loading}>
-                            {loading ? "Processing..." : "Proceed to Checkout"}
+                            {loading ? "Processing..." : "Proceed to Checkout →"}
                         </button>
                     </div>
                 </div>
