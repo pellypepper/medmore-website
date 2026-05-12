@@ -67,9 +67,15 @@ const Card = () => {
                     return;
                 }
 
-                confirmResult = await stripe.confirmCardPayment(clientSecret, {
-                    payment_method: { card: cardNumberElement },
-                });
+              confirmResult = await stripe.confirmCardPayment(clientSecret, {
+  payment_method: {
+    card: cardNumberElement,
+    billing_details: {
+      email: form.email,
+      name: `${form.firstname} ${form.lastname}`,
+    },
+  },
+});
             } else if (['apple_pay', 'google_pay', 'klarna'].includes(paymentMethodType)) {
                 setError(`Payment method '${paymentMethodType}' is not yet supported.`);
                 setLoading(false);

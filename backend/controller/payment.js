@@ -6,6 +6,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
       url: "https://github.com/stripe-samples/checkout-one-time-payments"
     }
   });
+
   const pool = require('../db');
   const { sendEmail } = require('../mailer');
   
@@ -65,10 +66,9 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
       data = req.body.data;
       eventType = req.body.type;
     }
-  
-    if (eventType === 'checkout.session.completed') {
-      console.log(`🔔  Payment received!`);
-    }
+  if (eventType === 'payment_intent.succeeded') {
+  console.log('🔔 Payment successful!');
+}
   
     res.sendStatus(200);
   };
@@ -142,6 +142,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
   
   // POST /create-payment-intent
   exports.createPaymentIntent = async (req, res) => {
+     
     const { amount, paymentMethodType } = req.body;
   
     if (!amount || typeof amount !== 'number' || amount <= 0) {
