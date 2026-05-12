@@ -142,7 +142,7 @@ exports.recordPayment = async (req, res) => {
 
     // 2. Email (non-blocking safety)
     try {
-      await sendEmail('gmail', userData.email, userData, cart);
+     sendEmail('gmail', userData.email, userData, cart);
     } catch (emailError) {
       console.error("EMAIL ERROR:", emailError);
     }
