@@ -52,7 +52,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
   
       try {
         event = stripe.webhooks.constructEvent(
-          req.rawBody,
+          req.body,
           signature,
           process.env.STRIPE_WEBHOOK_SECRET
         );

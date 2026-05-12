@@ -4,7 +4,7 @@ const paymentController = require('../controller/payment');
 const stripeWebhookMiddleware = require('../middleware/stripeWebhookMiddleware');
 
 // Stripe webhook route with raw body middleware
-router.post('/webhook', stripeWebhookMiddleware, paymentController.handleWebhook);
+router.post('/webhook', paymentController.handleWebhook);
 
 // All routes
 router.get('/checkout-session', paymentController.getCheckoutSession);
