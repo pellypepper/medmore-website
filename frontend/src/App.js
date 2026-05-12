@@ -4,6 +4,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Spinner from './component/spinner';
 
 // Lazy load components
 const Home = lazy(() => import('./pages/home/home'));
@@ -25,7 +26,7 @@ const getStripe = () => {
   try {
     return loadStripe(stripeKey);
   } catch (error) {
-    console.error('Error loading Stripe:', error);
+    
     return null;
   }
 };
@@ -109,7 +110,7 @@ function App() {
     return (
       <Elements stripe={stripePromise}>
         <Router>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<div><Spinner/></div>}>
             <Routes>
               <Route path="/" element={<Home removeFromCart={removeFromCart} />} />
               <Route path="/checkout" element={<Checkout removeFromCart={removeFromCart} />} />

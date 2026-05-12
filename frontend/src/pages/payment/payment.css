@@ -73,6 +73,21 @@
     bottom: 0;
     width: 100%;
 }
+
+@media screen and (max-width: 910px){
+    .payment-con{
+
+        height: auto;
+        overflow: auto;
+    }
+ .footer-wrap{
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+    
+}
+
 @media screen and (max-width: 481px){
     .payment-section .payment-title {
 
