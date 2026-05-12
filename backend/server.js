@@ -70,9 +70,7 @@ configurePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Serve static files
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 
 // routes
@@ -83,7 +81,9 @@ app.use('/payment', paymentRoutes);
 app.use('/admin', salesRoutes);
 
 
-
+// Serve static files
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Serve React app for all other routes
 app.get('*', (req, res) => {
