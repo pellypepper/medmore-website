@@ -57,7 +57,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
           process.env.STRIPE_WEBHOOK_SECRET
         );
       } catch (err) {
-        console.log(`⚠️  Webhook signature verification failed.`);
+
         return res.sendStatus(400);
       }
       data = event.data;
@@ -67,7 +67,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
       eventType = req.body.type;
     }
   if (eventType === 'payment_intent.succeeded') {
-  console.log('🔔 Payment successful!');
+ 
 }
   
     res.sendStatus(200);
