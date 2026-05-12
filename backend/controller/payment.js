@@ -84,61 +84,111 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
   };
   
   // POST /record-payment
-  exports.recordPayment = async (req, res) => {
+exports.recordPayment = async (req, res) => {
+  try {
     const { cart, paymentIntentId, ...userData } = req.body;
-  
-    if (!userData || !paymentIntentId || !Array.isArray(cart) || cart.length === 0) {
-      return res.status(400).json({ error: 'User data and payment intent ID are required' });
-    }
-  
-    const orderId = Math.random().toString(36).substr(2, 9);
-    const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
-    const address = `${userData.address} ${userData.country} ${userData.state} ${userData.postcode}`;
-  
-    try {
-      try {
-        await pool.query('INSERT INTO "sales" (amount, currency, email) VALUES ($1, $2, $3)',
-          [totalAmount, "GBP", userData.email]);
-  
-        await pool.query('INSERT INTO "orders" (amount, currency, email, address, payment_status, firstname, lastname, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-          [totalAmount, "GBP", userData.email, address, "Paid", userData.firstname, userData.lastname, userData.number]);
-      } catch (error) {
-        console.error('Error saving sale to database:', error);
-      }
-  
-      await sendEmail('gmail', userData.email, userData, cart);
-  
-      const sellerMessage = `A new order has been placed!
-  
-  Customer Name: ${userData.firstname} ${userData.lastname}
-  Order ID: ${orderId}
-  Email: ${userData.email}
-  Address: ${address}
-  Phone Number: ${userData.number}
-  Cart Items:
-  ${cart.map(item => `- ${item.productName}: $${item.price} x ${item.quantity}`).join('\n')}
-  
-  Total Amount: $${totalAmount}
-  
-  Please process this order promptly.`;
-  
-      await sendEmail('gmail', 'ppeliance@gmail.com', {}, [], sellerMessage);
-  
-      cart.length = 0;
-      res.json({
-        message: 'Payment recorded successfully',
-        order: {
-          id: orderId,
-          ...userData,
-          cart,
-          paymentIntentId,
-          totalAmount,
-        },
+
+    if (
+      !userData ||
+      !paymentIntentId ||
+      !Array.isArray(cart) ||
+      cart.length === 0
+    ) {
+      return res.status(400).json({
+        error: 'User data and payment intent ID are required'
       });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to record payment' });
     }
-  };
+
+    const orderId = Math.random().toString(36).substring(2, 10);
+
+    const totalAmount = cart.reduce((sum, item) => {
+      const price = Number(item.price) || 0;
+      const qty = Number(item.quantity) || 0;
+      return sum + price * qty;
+    }, 0).toFixed(2);
+
+    const address = [
+      userData.address,
+      userData.country,
+      userData.state,
+      userData.postcode
+    ].filter(Boolean).join(' ');
+
+    // 1. Save to DB (fail-safe)
+    try {
+      await pool.query(
+        'INSERT INTO sales (amount, currency, email) VALUES ($1, $2, $3)',
+        [totalAmount, "GBP", userData.email]
+      );
+
+      await pool.query(
+        `INSERT INTO orders 
+        (amount, currency, email, address, payment_status, firstname, lastname, phone_number)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+        [
+          totalAmount,
+          "GBP",
+          userData.email,
+          address,
+          "Paid",
+          userData.firstname,
+          userData.lastname,
+          userData.number
+        ]
+      );
+    } catch (dbError) {
+      console.error("DB ERROR:", dbError);
+    }
+
+    // 2. Email (non-blocking safety)
+    try {
+      await sendEmail('gmail', userData.email, userData, cart);
+    } catch (emailError) {
+      console.error("EMAIL ERROR:", emailError);
+    }
+
+    // 3. Seller email (also safe)
+    try {
+      const sellerMessage = `
+New Order Received
+
+Customer: ${userData.firstname} ${userData.lastname}
+Order ID: ${orderId}
+Email: ${userData.email}
+Address: ${address}
+Phone: ${userData.number}
+
+Items:
+${cart.map(item =>
+  `- ${item.productName}: $${item.price} x ${item.quantity}`
+).join('\n')}
+
+Total: £${totalAmount}
+      `;
+
+      await sendEmail('gmail', 'ppeliance@gmail.com', {}, [], sellerMessage);
+    } catch (sellerEmailError) {
+      console.error("SELLER EMAIL ERROR:", sellerEmailError);
+    }
+
+    // 4. Always respond SUCCESS (important for frontend stability)
+    return res.json({
+      message: 'Payment recorded successfully',
+      order: {
+        id: orderId,
+        email: userData.email,
+        totalAmount,
+        paymentIntentId
+      }
+    });
+
+  } catch (error) {
+    console.error("recordPayment FATAL ERROR:", error);
+    return res.status(500).json({
+      error: 'Server error while recording payment'
+    });
+  }
+};
   
   // POST /create-payment-intent
   exports.createPaymentIntent = async (req, res) => {
