@@ -1,31 +1,32 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Function to create a transporter based on the email service
-const createTransporter = (service) => {
-    return nodemailer.createTransport({
-        service: 'gmail', 
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS, 
-        },
-         secure: false,
-  requireTLS: true,
-  tls: {
-    rejectUnauthorized: false
-  },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000,
+// const createTransporter = (service) => {
+//     return nodemailer.createTransport({
+//         service: 'gmail', 
+//         auth: {
+//             user: process.env.EMAIL_USER,
+//             pass: process.env.EMAIL_PASS, 
+//         },
+//          secure: false,
+//   requireTLS: true,
+//   tls: {
+//     rejectUnauthorized: false
+//   },
+//     connectionTimeout: 10000,
+//     greetingTimeout: 10000,
+//     socketTimeout: 10000,
 
-    });
-};
+//     });
+// };
 
 // Function to send email
 const sendEmail = async (service, to, userDetails, cart, customMessage = null) => {
     if (!Array.isArray(cart)) {
         throw new Error("Invalid cart format. Cart must be an array.");
     }
-    const transporter = createTransporter(service);
+ 
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
 
     const emailText = customMessage || `Hello ${userDetails.firstname},
@@ -45,14 +46,15 @@ Best regards,
 The FoodStuff Team`;
 
     const mailOptions = {
-        from: `"FoodStuff" <${process.env.EMAIL_USER}>`,
+        from: `medmore@ppeliance.co.uk`,
         to,
         subject: customMessage ? 'New Order Notification' : 'Your FoodStuff Order Confirmation',
         text: emailText,
     };
 
     try {
-        await transporter.sendMail(mailOptions);
+          await resend.emails.send(mailOptions)
+       
         console.log(`Email sent successfully to ${to}`);
     } catch (error) {
         console.error(`Error sending email: ${error.message}`);
