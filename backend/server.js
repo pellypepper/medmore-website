@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 10000;
 
 // Configure CORS
 app.use(cors({
-    origin: process.env.REACT_APP_API_URL,
+    origin: "https://medmore-website.onrender.com",
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
         'Content-Type', 
@@ -60,8 +60,8 @@ app.use(session({
     saveUninitialized: true,
     cookie: { 
         maxAge: 180 * 60 * 1000, 
-        sameSite: 'lax', 
-        secure: process.env.NODE_ENV === 'production', // Ensure secure is true only in production
+        sameSite: 'none', 
+        secure: true, // Ensure secure is true only in production
         httpOnly: true
     } 
 }));
